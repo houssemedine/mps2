@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_filters %}
+
+{% block content %}
+
+<div class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary card-outline">
+                      <div class="card-header">
+                        <h5 class="m-0">Products</h5>
+                      </div>
+                      <div class="card-body" >
+                            
+<a class="btn btn-outline-primary" data-target="#create" data-toggle="modal" style="margin-bottom: 10px;"> New </a>
+<table class="table table-bordered text-nowrap">
+    <thead >
+        <tr>
+            
+            <th>ID</th>
+            <th>Program</th>
+            <th>Has Treatment</th>
+            <th>Product</th>         
+            <th>Planning</th>
+            <th>Material</th>
+            <th>Calendar</th>
+            <th>Calendar Config Treatment</th>
+            <th>Calendar Config CpOrdo</th>
+
+            <th colspan="2">Actions</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        
+           
+            {% for d in data %}
+            <tr>
+            <td>{{ d.id}}</td> 
+            <td>{{ d.program}}</td>
+            <td>{{ d.has_treatement}}</td>   
+            <td>{{ d.product}}</td>
+            <td>{{ d.planning}}</td>
+            <td><a href="{% url 'material' d.id %}">Material</a></td>
+            <td><a href="{% url 'calendar' d.id %}">Calendar</a></td>
+            {%if d.has_treatement %}
+                <td><a href="{% url 'configTrait' d.id %}">Calendar Config Treatment</a></td>
+                <td><a href="{% url 'configCpordo' d.id %}">Calendar Config CpOrdo</a></td>
+
+            {%else%}
+                <td>N/A</td>
+                <td>N/A</td>
+            {%endif%}
+            <td><button class="btn" data-toggle="modal" data-target="#update" data-id="{{d.id}}" data-traitement="{{d.has_treatement}}" data-product="{{d.product}}" data-program="{{d.program}}" data-planning="{{d.planning}}"  ><i class="fa-solid fa-pen" style="color: rgb(35, 35, 80);"></i></button>
+               <button class="btn" data-toggle="modal" data-target="#delete" data-id="{{d.id}}" data-product="{{d.product}}"><i class="fa-solid fa-trash" style="color: #dc3545;"></i></button></td>
+            </tr>
+            {% endfor %}
+                  
+</table>
+
+</div>
+     <div class="card-footer clearfix">
+     </div>
+     </div>
+     </div>
+    </div>
+    </div>
+</div>
+
+
+<!--create Product modal-->
+<div class="modal" id="create">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <form method="POST" action="{% url 'createproduct' division %}">
+        <!-- Security token -->
+        {% csrf_token %}
+       <div class="modal-header">						
+       <h4 class="modal-title">Create New Product</h4>
+       </div>
+       <div class="modal-body">
+            <!-- Using the formset with crispy-->
+            {{ form|crispy}}
+       </div>
+        
+          <div class="modal-footer">
+          <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+          <input type="submit" class="btn btn-primary" value="Save">
+          </div>
+     </form>
+    </div>
+    </div>
+  </div>
+
+<!--Update Product modal-->
+<div class="modal" id="update" >
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <form method="POST" action ="{%url 'updateproduct'%}"> 
+            <!-- Security token by Django -->
+            {% csrf_token %}
+        <div class="modal-header">						
+            <h4 class="modal-title">Edit Product</h4>
+        </div>
+        <div class="modal-body">    
+                 <!-- form with crispy -->
+                 {{ form|crispy}}
+                 <input type="hidden" id="id" name="id" value="">
+                 
+        </div>
+            <div class="modal-footer">
+                <input type="button"  class="btn btn-default" data-dismiss="modal"  value="Cancel">
+                <input type="submit" class="btn btn-primary" value="update">
+            </div>
+        </form>
+    </div>
+    </div>
+  </div>
+
+
+<!--delete Product modal-->
+<div class="modal" id="delete" >
+    <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">						
+        <h4 class="modal-title">Delete Product</h4>
+    </div>
+    <div class="modal-body">					
+    </div>
+    <div class="modal-footer">
+        <input type="button" href="" class="btn btn-default" data-dismiss="modal" value="Cancel">
+        <a href="" id='targetlink' class="btn btn-danger" value="Delete">Delete</a>  
+    </div>
+    </div>
+    </div>
+</div>
+
+<!-- Delete Modal  -->
+<script>
+    $('#delete').on('show.bs.modal', function (event) {
+    var id = $(event.relatedTarget).data('id');
+    var product = $(event.relatedTarget).data('product');
+    $(this).find(".modal-body").text('Are you sure you want to delete these Product: '+ product +'?');
+    document.getElementById("targetlink").href="/app/division/"+id+"/deleteproduct";
+
+    });
+</script>
+
+<!-- Edit Modal  -->
+<script>
+    $('#update').on('show.bs.modal', function (event) {
+    var id = $(event.relatedTarget).data('id');
+    var product = $(event.relatedTarget).data('product');
+    var program = $(event.relatedTarget).data('program');
+    var planning = $(event.relatedTarget).data('planning');
+    var traitement = $(event.relatedTarget).data('traitement');
+    $(this).find(".modal-body #id").val(id);
+    $(this).find(".modal-body #id_product").val(product);
+    $(this).find(".modal-body #id_program").val(program);
+    $(this).find(".modal-body #id_planning").val(planning); 
+    console.log(traitement);
+    if  (traitement == 'True') {
+        document.getElementById("id_has_treatement").checked=true;
+    } 
+    });
+
+</script>
+
+
+{% endblock %}
