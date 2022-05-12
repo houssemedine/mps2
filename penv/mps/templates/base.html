@@ -87,9 +87,9 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4" >
     <!-- Brand Logo -->
     <a href="" class="brand-link">
-      <img src="" alt="Logo_Latéc" class="brand-image img-circle elevation-3"
+      <img src="" alt="mps" class="brand-image img-circle elevation-3"
            style="opacity: .8">
-      <span class="brand-text font-weight-light">latecoere</span>
+      <span class="brand-text font-weight-light">MPS v1.2.5</span>
     </a>
 
     <!-- Sidebar -->
@@ -100,20 +100,10 @@
           <img src="{% static 'adminlte/dist/img/avatar2.png' %}" class="img-circle elevation-2">
         </div>
         <div class="info">
-          <a href="#" class="d-block"> Marwa Noomene</a>
+          <a href="#" class="d-block">Marwa Noomene</a>
         </div>
       </div>
 
-      <form class="form-inline">
-        <div class="input-group">
-          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" >
-          <div class="input-group-append" >
-            <button class="btn btn-sidebar" type="submit">
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-        </div>
-      </form>
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
@@ -165,7 +155,7 @@
 
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper" style="background-color: rgb(252, 255, 250);">
+  <div class="content-wrapper" >
     <div class="content-header">
       <div class="container-fluid" style="background-color: white;height: 55px;">
       <div class="row mb-2">
@@ -174,7 +164,7 @@
       </div><!-- /.col -->
       <div class="col-sm-6">
       <ol class="breadcrumb float-sm-right" style="margin-top: 10px;">
-      <li class="active"><a href="#">MPS</a></li>
+      <li class="breadcrumb-item"> <a href="#">MPS{{request.get_full_path}}</a></li>
       <!-- <li class="breadcrumb-item active">Starter Page</li> -->
       </ol>
       </div><!-- /.col -->
@@ -189,8 +179,14 @@
                 
     </div>
   </div>
+  <div>
+    <footer class="main-footer">
+      <strong>Copyright &copy; MRPC Latecoere</strong>
+    </footer>
+  </div>
  </div>
 </body>
+
 </html>
 
 

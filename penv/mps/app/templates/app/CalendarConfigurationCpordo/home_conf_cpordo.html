@@ -6,7 +6,10 @@
 
 <div class="content">
     <div class="container-fluid">
-
+        <!--return back-->
+        <div style='margin-bottom:10px'>
+            <a href="{%url 'product' product %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>
+            </div>
         <div class="row">
             <div class="col-12">
                 <div class="card card-primary card-outline">
@@ -37,8 +40,20 @@
                                     <td>{{ d.msn}}</td>
                                     <td>{{ d.first_def}}</td>
                                     <td>{{ d.last_def}}</td>
-                                    <td><button class="btn"data-toggle="modal" data-target="#update" data-id="{{d.id}}" data-msn="{{d.msn}}" data-lastdef="{{d.first_def}}" data-firstdef="{{d.last_def}}"><i class="fa-solid fa-pen" style="color: rgb(35, 35, 80);"></i></button>
-                                    <button class="btn"data-toggle="modal" data-target="#delete" data-id="{{d.id}}" data-msn="{{d.msn}}"><i class="fa-solid fa-trash" style="color: #dc3545;"></i></button></td>
+                                    {% if d.is_deleted%} 
+                                    <td style="color: red;">Deleted</td> 
+                                    {%else%} 
+                                    <td >Active</td> 
+                                    {%endif%}
+                                    <td>
+                                    {% if d.is_deleted%}  
+                                    <button class="btn" data-toggle="modal" data-target="#restore" data-id="{{d.id}}" data-msn="{{d.msn}}"><i class="fa-solid fa-arrow-rotate-left" style="color: #0d6efd;"></i></button>
+                                    {%else%}
+                                    <button class="btn"data-toggle="modal" data-target="#update" data-id="{{d.id}}" data-msn="{{d.msn}}" data-lastdef="{{d.first_def}}" data-firstdef="{{d.last_def}}"><i class="fa-solid fa-pen" style="color: rgb(35, 35, 80);"></i></button>
+                                    <button class="btn"data-toggle="modal" data-target="#delete" data-id="{{d.id}}" data-msn="{{d.msn}}"><i class="fa-solid fa-trash" style="color: #dc3545;"></i></button>
+                                    {%endif%}
+                                    
+                                </td>
                                     </tr>
                                     {% endfor %}             
                                           
@@ -101,7 +116,7 @@
   </div>
 
 
-<!--delete Calendar Configuration Treatment modal-->
+<!--delete Calendar Configuration CpOrdo modal-->
 <div class="modal" id="delete" >
     <div class="modal-dialog">
     <div class="modal-content">
@@ -118,6 +133,28 @@
     </div>
 </div>
 
+<!--restore Calendar Configuration CpOrdo modal-->
+<div class="modal" id="restore" >
+    <div class="modal-dialog ">
+    <div class="modal-content">
+    <div class="modal-header">						
+        <h4 class="modal-title">Restore Calendar Configuration CpOrdo</h4>
+    </div>
+    <div class="modal-body">					
+    </div>
+    <div class="modal-footer">
+        <input type="button" href="" class="btn btn-default" data-dismiss="modal" value="Cancel">
+        <a href="" id='link' class="btn btn-danger" value="Delete">Restore</a>  
+    </div>
+    </div>
+    </div>
+</div>
+
+
+
+<!--*******************************************************************************************************************-->
+
+
 <!-- Delete Modal  -->
 <script>
     $('#delete').on('show.bs.modal', function (event) {
@@ -128,6 +165,17 @@
 
     });
 </script>
+
+<!-- restore Modal  -->
+<script>
+    $('#restore').on('show.bs.modal', function (event) {
+    var id = $(event.relatedTarget).data('id');
+    var msn = $(event.relatedTarget).data('msn');
+    $(this).find(".modal-body").text('Are you sure you want to restore these Calendar Configuration CpOrdo: '+msn +'?');
+    document.getElementById("link").href="/app/product/"+id+"/restoreconfigCpordo";
+    });
+</script>
+
 
 <!-- Edit Modal  -->
 <script>

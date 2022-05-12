@@ -25,7 +25,7 @@ def read_division(request):
     #get Division form
     form = DivisionForm()
     # undeleted_objects object of soft delete manager
-    data = Division.undeleted_objects.all().order_by('id')    
+    data = Division.objects.all().order_by('id')  
     return render(request, "app/division/home_division.html", {'data':data,'form':form})
 
 
@@ -58,14 +58,12 @@ def delete_division(request, id):
 
 # restore object(Division) by id
 def restore_division(request, id):
-    context ={}
     # fetch the object related to passed id
     obj = get_object_or_404(Division, id = id)
-    if request.method =="POST":
-        # restore object
-        obj.restore() 
-        return redirect("../division")
-    return render(request,"app/division/restore_division.html",context)
+    # restore object
+    obj.restore() 
+    return redirect("../")
+    
 
 #*********************CRUD Material************************
 
@@ -83,7 +81,7 @@ def create_material(request,product):
 # read all objects(Material)
 def read_material(request):
     # undeleted_objects object of soft delete manager
-    data = Material.undeleted_objects.all().order_by('id')    
+    data = Material.objects.all().order_by('id')    
     return render(request, "app/material/materials.html", {'data':data})
 
 
@@ -111,13 +109,11 @@ def delete_material(request, id):
 
 # restore object(Material) by id
 def restore_material(request, id):
-    context ={}
     # fetch the object related to passed id
     obj = get_object_or_404(Material, id = id)
-    if request.method =="POST":
-        # restore object
-        obj.restore()
-    return render(request,"app/material/restore_material.html",context)
+    # restore object
+    obj.restore()
+    return redirect(f'../{str(obj.product_id)}/material/')    
 
 
 # find all Material for product 
@@ -125,7 +121,7 @@ def material(request ,product):
     #get MaterialForm
     form = MaterialForm()
     # undeleted_objects object of soft delete manager
-    data = Material.undeleted_objects.filter(product__pk = product ).order_by('id')    
+    data = Material.objects.filter(product__pk = product ).order_by('id')    
     return render(request, "app/material/material.html", {'data':data,'product':product,'form':form})
 
 
@@ -142,8 +138,13 @@ def calendar(request,product):
 
 # create calendar for product 
 def create_calendar(request,product):
+    #get list of days from work data 
+    #workDays = list(WorkData.objects.values_list('date',flat=True))
+    #print(workDays)
+    print('******************************************************************')
     # get list of days from dataBase to compare if exist 
     days = list(HolidaysCalendar.objects.values_list('holidaysDate',flat=True))
+    print(days)
     # get list of product_id from database to compare if exist
     products =list(HolidaysCalendar.objects.values_list('product_id',flat=True))
     if request.method=='POST' and 'save-event' in request.POST:
@@ -154,7 +155,7 @@ def create_calendar(request,product):
         endDate = request.POST.get('event-end-date')
         # If id exist Update Object if not create new one
         if id:
-            #get object work data
+            #get object HolidaysCalendar
             #first : to get object not queryset 
             holiday=HolidaysCalendar.objects.all().filter(id=id).first()  #intilisation object
             if startDate == endDate:
@@ -192,7 +193,6 @@ def create_calendar(request,product):
                      data = HolidaysCalendar(name=name,holidaysDate=day,product_id =product)
                      data.save()
     return redirect("../calendar")
-
 
 
 # delete day (holiday or work)
@@ -353,20 +353,19 @@ def delete_product(request, id):
 
 # restore object(Product) by id
 def restore_product(request, id):
-    context ={}
     # fetch the object related to passed id
     obj = get_object_or_404(Product, id = id)
-    if request.method =="POST":
-        # restore object
-        obj.restore()
-    return render(request,"app/product/restore_product.html",context)
+    # restore object
+    obj.restore()
+    return redirect(f'../{str(obj.division_id)}/product/')
+
 
 
 # find all product for division 
 def product(request ,division):
     form = ProductForm()
     # undeleted_objects object of soft delete manager
-    data = Product.undeleted_objects.filter(division__pk = division ).order_by('id')    
+    data = Product.objects.filter(division__pk = division ).order_by('id')    
     return render(request, "app/product/product.html", {'data':data,'division':division,'form':form})
 
 #********************work Data****************************
@@ -561,18 +560,17 @@ def delete_conf_trait(request, id):
 def restore_conf_trait(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(CalendarConfigurationTreatement, id = id)
-    if request.method =="POST":
-        # restore object
-        obj.restore()
-    return render(request,"app/CalendarConfigurationTraitement/restore_conf_traitement.html")
-
+    # restore object
+    obj.restore()
+    return redirect(f'../{str(obj.product_id)}/configTrait')
+    
 
 # find all CalendarConfigurationTraitement for product 
 def config_trait(request ,product):
     #get CalendarConfigurationTraitementForm
     form = CalendarConfigurationTreatementForm()
     # undeleted_objects object of soft delete manager
-    data = CalendarConfigurationTreatement.undeleted_objects.filter(product__pk = product ).order_by('id')    
+    data = CalendarConfigurationTreatement.objects.filter(product__pk = product ).order_by('id')    
     return render(request, "app/CalendarConfigurationTraitement/home_conf_traitement.html", {'data':data,'product':product,'form':form})
 
 
@@ -614,18 +612,17 @@ def delete_conf_cpordo(request, id):
 def restore_conf_cpordo(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(CalendarConfigurationCpordo, id = id)
-    if request.method =="POST":
-        # restore object
-        obj.restore()
-    return render(request,"app/CalendarConfigurationCpordo/restore_conf_cpordo.html")
-
+    # restore object
+    obj.restore()
+    return redirect(f'../{str(obj.product_id)}/configCpordo')
+    
 
 # find all CalendarConfigurationCpordo for product 
 def config_cpordo(request ,product):
     #get CalendarConfigurationCpordoForm
     form = CalendarConfigurationCpordoForm()
     # undeleted_objects object of soft delete manager
-    data = CalendarConfigurationCpordo.undeleted_objects.filter(product__pk = product ).order_by('id')    
+    data = CalendarConfigurationCpordo.objects.filter(product__pk = product ).order_by('id')    
     return render(request, "app/CalendarConfigurationCpordo/home_conf_cpordo.html", {'data':data,'product':product,'form':form})
 
 #********************** Home****************************

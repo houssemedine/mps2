@@ -5,7 +5,6 @@
 
 <div class="content">
     <div class="container-fluid">
-
         <div class="row">
             <div class="col-12">
                 <div class="card card-primary card-outline">
@@ -13,7 +12,8 @@
                         <h5 class="m-0">Divisions</h5>
                       </div>
                       <div class="card-body">
-                        <a class="btn btn-outline-primary "  data-target="#create" data-toggle="modal" style="margin-bottom: 10px;"> New </a>
+                        <a class="btn btn-outline-primary "   data-target="#create" data-toggle="modal" style="margin-bottom: 10px;"> New </a>
+
 
                         <table class="table table-bordered text-nowrap">
                             <thead>
@@ -23,6 +23,7 @@
                                     <th>Name division</th>
                                     <th>Description division</th>
                                     <th>Product</th>
+                                    <th>State</th>
                                     <th colspan="2">Actions</th>
                                     
                                 </tr>
@@ -36,11 +37,21 @@
                                     <td>{{ d.name}}</td>
                                     <td>{{ d.description}}</td>
                                     <td><a href="{% url 'product' d.id %}">Product</a></td> 
+                                    {% if d.is_deleted%} 
+                                    <td style="color: red;">Deleted</td> 
+                                    {%else%} 
+                                    <td >Active</td> 
+                                    {%endif%}
                                     <td>
-                                    <button class="btn" data-target="#update" data-id="{{d.id}}" data-name="{{d.name}}" data-description="{{d.description}}" data-toggle="modal"><i class="fa-solid fa-pen" style="color: rgb(35, 35, 80);"></i></button>
-                                    <button class="btn" data-target="#delete" data-id="{{d.id}}" data-name="{{d.name}}" data-toggle="modal" ><i class="fa-solid fa-trash" style="color: #dc3545;"></i></button>
+                                        {% if d.is_deleted%}
+                                        <button class="btn" data-target="#restore" data-toggle="modal" data-id="{{d.id}}" data-name="{{d.name}}" ><i class="fa-solid fa-arrow-rotate-left" style="color: #0d6efd;"></i></button>
+
+                                        {%else%}
+                                            <button class="btn" data-target="#update" data-id="{{d.id}}" data-name="{{d.name}}" data-description="{{d.description}}" data-toggle="modal"><i class="fa-solid fa-pen" style="color: rgb(35, 35, 80);"></i></button>
+                                            <button class="btn" data-target="#delete" data-id="{{d.id}}" data-name="{{d.name}}" data-toggle="modal" ><i class="fa-solid fa-trash" style="color: #dc3545;"></i></button>
+                                        {%endif%}
                                     </td>
-                                    </tr>
+                                </tr>
                                     {% endfor %} 
                                     
                                           
@@ -106,7 +117,7 @@
 
 <!--delete Division modal-->
 <div class="modal" id="delete" >
-    <div class="modal-dialog">
+    <div class="modal-dialog ">
     <div class="modal-content">
     <div class="modal-header">						
         <h4 class="modal-title">Delete Division</h4>
@@ -121,6 +132,25 @@
     </div>
 </div>
 
+<!--restore Division modal-->
+<div class="modal" id="restore" >
+    <div class="modal-dialog ">
+    <div class="modal-content">
+    <div class="modal-header">						
+        <h4 class="modal-title">Restore Division</h4>
+    </div>
+    <div class="modal-body">					
+    </div>
+    <div class="modal-footer">
+        <input type="button" href="" class="btn btn-default" data-dismiss="modal" value="Cancel">
+        <a href="" id='link' class="btn btn-danger" value="Delete">Restore</a>  
+    </div>
+    </div>
+    </div>
+</div>
+
+
+<!--******************************************************************************************************************************-->
 <!-- Delete Modal  -->
 <script>
     $('#delete').on('show.bs.modal', function (event) {
@@ -131,7 +161,20 @@
 
     });
 </script>
-<!-- Edit Modal  -->
+
+
+<!-- restore Modal  -->
+<script>
+    $('#restore').on('show.bs.modal', function (event) {
+    var id = $(event.relatedTarget).data('id');
+    var name = $(event.relatedTarget).data('name');
+    $(this).find(".modal-body").text('Are you sure you want to restore these division: '+name +'?');
+    document.getElementById("link").href="/app/division/"+id+"/restore";
+    });
+</script>
+
+
+<!-- Edit Modal -->
 <script>
     $('#update').on('show.bs.modal', function (event) {
     var id = $(event.relatedTarget).data('id');

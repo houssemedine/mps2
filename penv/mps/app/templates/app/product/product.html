@@ -6,7 +6,10 @@
 
 <div class="content">
     <div class="container-fluid">
-
+        <!--return back-->
+        <div style='margin-bottom:10px'>
+            <a href="{%url 'division' %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>
+            </div>
         <div class="row">
             <div class="col-12">
                 <div class="card card-primary card-outline">
@@ -19,7 +22,6 @@
 <table class="table table-bordered text-nowrap">
     <thead >
         <tr>
-            
             <th>ID</th>
             <th>Program</th>
             <th>Has Treatment</th>
@@ -29,6 +31,7 @@
             <th>Calendar</th>
             <th>Calendar Config Treatment</th>
             <th>Calendar Config CpOrdo</th>
+            <th>State</th>
 
             <th colspan="2">Actions</th>
             
@@ -54,8 +57,19 @@
                 <td>N/A</td>
                 <td>N/A</td>
             {%endif%}
-            <td><button class="btn" data-toggle="modal" data-target="#update" data-id="{{d.id}}" data-traitement="{{d.has_treatement}}" data-product="{{d.product}}" data-program="{{d.program}}" data-planning="{{d.planning}}"  ><i class="fa-solid fa-pen" style="color: rgb(35, 35, 80);"></i></button>
-               <button class="btn" data-toggle="modal" data-target="#delete" data-id="{{d.id}}" data-product="{{d.product}}"><i class="fa-solid fa-trash" style="color: #dc3545;"></i></button></td>
+            {% if d.is_deleted%} 
+            <td style="color: red;">Deleted</td> 
+            {%else%} 
+            <td >Active</td> 
+            {%endif%}
+            <td>
+                {% if d.is_deleted%}
+                <button class="btn" data-toggle="modal" data-target="#restore" data-id="{{d.id}}" data-product="{{d.product}}"><i class="fa-solid fa-arrow-rotate-left" style="color: #0d6efd;"></i></button>
+                {%else%}
+               <button class="btn" data-toggle="modal" data-target="#update" data-id="{{d.id}}" data-traitement="{{d.has_treatement}}" data-product="{{d.product}}" data-program="{{d.program}}" data-planning="{{d.planning}}"  ><i class="fa-solid fa-pen" style="color: rgb(35, 35, 80);"></i></button>
+               <button class="btn" data-toggle="modal" data-target="#delete" data-id="{{d.id}}" data-product="{{d.product}}"><i class="fa-solid fa-trash" style="color: #dc3545;"></i></button>
+               {%endif%}
+            </td>
             </tr>
             {% endfor %}
                   
@@ -138,6 +152,24 @@
     </div>
 </div>
 
+<!--restore Product modal-->
+<div class="modal" id="restore" >
+    <div class="modal-dialog ">
+    <div class="modal-content">
+    <div class="modal-header">						
+        <h4 class="modal-title">Restore Product</h4>
+    </div>
+    <div class="modal-body">					
+    </div>
+    <div class="modal-footer">
+        <input type="button" href="" class="btn btn-default" data-dismiss="modal" value="Cancel">
+        <a href="" id='link' class="btn btn-danger" value="Delete">Restore</a>  
+    </div>
+    </div>
+    </div>
+</div>
+<!--******************************************************************************************************************************-->
+
 <!-- Delete Modal  -->
 <script>
     $('#delete').on('show.bs.modal', function (event) {
@@ -146,6 +178,16 @@
     $(this).find(".modal-body").text('Are you sure you want to delete these Product: '+ product +'?');
     document.getElementById("targetlink").href="/app/division/"+id+"/deleteproduct";
 
+    });
+</script>
+
+<!-- restore Modal  -->
+<script>
+    $('#restore').on('show.bs.modal', function (event) {
+    var id = $(event.relatedTarget).data('id');
+    var product = $(event.relatedTarget).data('product');
+    $(this).find(".modal-body").text('Are you sure you want to restore these Product: '+product +'?');
+    document.getElementById("link").href="/app/division/"+id+"/restoreproduct";
     });
 </script>
 

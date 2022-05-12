@@ -7,14 +7,14 @@ urlpatterns = [
     path('create/',views.create_division,name='create'),
     path('division/update',views.update_division,name='update'),
     path('division/<id>/delete',views.delete_division,name='delete'),
-    path('restore/<id>',views.restore_division,name='restore'),
+    path('division/<id>/restore',views.restore_division,name='restore'),
 
     #urls for CRUD Material
     path('product/<product>/material/',views.material,name='material'),
     path('product/<product>/creatematerial',views.create_material,name='creatematerial'),
     path('product/updatematerial',views.update_material,name='updatematerial'),
     path('product/<id>/deletematerial',views.delete_material,name='deletematerial'),
-    path('restoremateriale/<id>',views.restore_material,name='restoremateriale'),
+    path('product/<id>/restoremateriale',views.restore_material,name='restoremateriale'),
     #Get Global Materials
     path('materials/',views.read_material,name='materials'),
    
@@ -31,12 +31,12 @@ urlpatterns = [
     path('product/<product>/createcustomcalendar/',views.create_custom_calendar,name='createcustomcalendar'),
     path('product/<product>/deletedaycustom/',views.delete_day_custom,name='deletedaycustom'),
     
-    #urls for CRUD Program
+    #urls for CRUD product
     path('division/<division>/product/',views.product,name='product'),
     path('division/<division>/createproduct',views.create_product,name='createproduct'),
     path('division/updateproduct',views.update_product,name='updateproduct'),
     path('division/<id>/deleteproduct',views.delete_product,name='deleteproduct'),
-    path('restoreproduct/<id>',views.restore_product,name='restoreproduct'),
+    path('division/<id>/restoreproduct',views.restore_product,name='restoreproduct'),
 
     #urls for work data
     path('product/<product>/workdata/',views.work_data,name='workdata'),
@@ -49,7 +49,7 @@ urlpatterns = [
     path('product/<product>/createconfigTrait',views.create_conf_trait,name='createconfigTrait'),
     path('product/updateconfigTrait',views.update_conf_trait,name='updateconfigTrait'),
     path('product/<id>/deleteconfigTrait',views.delete_conf_trait,name='deleteconfigTrait'),
-    path('restoreconfigTrait/<id>',views.restore_conf_trait,name='restoreconfigTrait'),
+    path('product/<id>/restoreconfigTrait',views.restore_conf_trait,name='restoreconfigTrait'),
     
     
     #urls for CRUD CalendarConfigurationCpordo
@@ -57,7 +57,7 @@ urlpatterns = [
     path('product/<product>/createconfigCpordo',views.create_conf_cpordo,name='createconfigCpordo'),
     path('product/updateconfigCpordo',views.update_conf_cpordo,name='updateconfigCpordo'),
     path('product/<id>/deleteconfigCpordo',views.delete_conf_cpordo,name='deleteconfigCpordo'),
-    path('restoreconfigCpordo/<id>',views.restore_conf_cpordo,name='restoreconfigCpordo'),
+    path('product/<id>/restoreconfigCpordo',views.restore_conf_cpordo,name='restoreconfigCpordo'),
     
     #url for Home 
     path('home/',views.home_page,name='home'),
