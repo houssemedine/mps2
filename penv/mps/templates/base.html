@@ -24,6 +24,9 @@
   <!-- jquery -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://unpkg.com/popper.js@1.14.7/dist/umd/popper.min.js"></script>
+  <!-- Alert Toastr -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css" rel="stylesheet">
   <!-- scripts for calendar -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
@@ -89,7 +92,7 @@
     <a href="" class="brand-link">
       <img src="" alt="mps" class="brand-image img-circle elevation-3"
            style="opacity: .8">
-      <span class="brand-text font-weight-light">MPS v1.2.5</span>
+      <span class="brand-text font-weight-light" style="text-decoration: none;">MPS</span>
     </a>
 
     <!-- Sidebar -->
@@ -100,7 +103,7 @@
           <img src="{% static 'adminlte/dist/img/avatar2.png' %}" class="img-circle elevation-2">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Marwa Noomene</a>
+          <a href="#" class="d-block" style="text-decoration: none; ">Marwa Noomene</a>
         </div>
       </div>
 
@@ -164,7 +167,8 @@
       </div><!-- /.col -->
       <div class="col-sm-6">
       <ol class="breadcrumb float-sm-right" style="margin-top: 10px;">
-      <li class="breadcrumb-item"> <a href="#">MPS{{request.get_full_path}}</a></li>
+      <li class="breadcrumb-item"> <a href="{% url 'home' %}">MPS </a></li>
+      <li class="breadcrumb-item active">{{request.get_full_path}}</li>
       <!-- <li class="breadcrumb-item active">Starter Page</li> -->
       </ol>
       </div><!-- /.col -->
@@ -181,7 +185,12 @@
   </div>
   <div>
     <footer class="main-footer">
-      <strong>Copyright &copy; MRPC Latecoere</strong>
+      <strong>Copyright &copy; MRPC Latecoere 
+    
+        </strong>
+      <div class="float-right d-none d-sm-inline-block">
+        <b>Version</b> 1.2.5
+        </div>
     </footer>
   </div>
  </div>

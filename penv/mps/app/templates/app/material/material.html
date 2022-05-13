@@ -6,6 +6,12 @@
 
 <div class="content">
     <div class="container-fluid">
+        <!--message alert -->
+        {% if messages %}
+            {% for message in messages %}
+                {%include 'app/alerts/alert.html'%}
+            {% endfor %}
+        {% endif %}
         <!--return back-->
         <div style='margin-bottom:10px'>
             <a href="{%url 'product' product %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>

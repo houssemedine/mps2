@@ -5,6 +5,7 @@ from app.forms import DivisionForm,MaterialForm,ProductForm,CalendarConfiguratio
 from datetime import  datetime, timedelta
 from io import StringIO
 import psycopg2, pandas as pd
+from django.contrib import messages
 
 # Create your views here.
 #Comment Houssem
@@ -14,10 +15,13 @@ import psycopg2, pandas as pd
 # add new object(Division)
 def create_division(request):
     form = DivisionForm(request.POST)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-    return redirect("../division")
-    
+    if request.method == "POST" :
+        if form.is_valid():
+            messages.success(request,"Division created successfully!")
+            form.save()
+        else:
+            messages.error(request,"Division exit or Form not valid! try again")
+    return redirect(read_division)
 
 
 # read all objects(Division)
@@ -71,10 +75,14 @@ def restore_division(request, id):
 # add new object(Material)
 def create_material(request,product):
     form = MaterialForm(request.POST)
-    if request.method == "POST" and form.is_valid():
-        instance=form.save(commit=False)
-        instance.product_id=product
-        instance.save()
+    if request.method == "POST":
+        if form.is_valid():
+            instance=form.save(commit=False)
+            instance.product_id=product
+            messages.success(request," Material created successfully!")
+            instance.save()
+        else:
+            messages.error(request,"Form not valid! try again")          
     return redirect(f'../{product}/material/')
 
 
@@ -320,10 +328,14 @@ def delete_day_custom(request,product):  # sourcery skip: avoid-builtin-shadow
 # add new object(product)
 def create_product(request,division):
     form = ProductForm(request.POST)
-    if request.method == "POST" and form.is_valid():
-        instance=form.save(commit=False)
-        instance.division_id=division
-        instance.save()
+    if request.method == "POST":
+        if form.is_valid():
+         instance=form.save(commit=False)
+         instance.division_id=division
+         messages.success(request," Product created successfully!")
+         instance.save()
+        else:
+            messages.error(request,"Form not valid! try again") 
     return redirect(f'../{division}/product/')
    
 
@@ -525,10 +537,14 @@ def custom_work(request,product):
 # add new object(CalendarConfigurationTraitement)
 def create_conf_trait(request,product):
     form = CalendarConfigurationTreatementForm(request.POST)
-    if request.method == "POST" and form.is_valid():
+    if request.method == "POST":
+     if form.is_valid():
         instance=form.save(commit=False)
         instance.product_id = product
+        messages.success(request,"CalendarConfigurationTraitement created successfully!")
         instance.save()
+     else:
+         messages.error(request,"Form not valid! try again")
     return redirect(f'../{product}/configTrait')
     
 
@@ -579,10 +595,14 @@ def config_trait(request ,product):
 # add new object(CalendarConfigurationCpordo)
 def create_conf_cpordo(request,product):
     form = CalendarConfigurationCpordoForm(request.POST)
-    if request.method == "POST" and form.is_valid():
-        instance=form.save(commit=False)
-        instance.product_id = product
-        instance.save()
+    if request.method == "POST":
+        if form.is_valid():
+            instance=form.save(commit=False)
+            instance.product_id = product
+            messages.success(request,"CalendarConfigurationCpordo created successfully!")
+            instance.save()
+        else:
+            messages.error(request,"Form not valid! try again")     
     return redirect(f'../{product}/configCpordo')
     
 

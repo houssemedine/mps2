@@ -6,6 +6,12 @@
 
 <div class="content">
     <div class="container-fluid">
+        <!--message alert -->
+        {% if messages %}
+            {% for message in messages %}
+                {%include 'app/alerts/alert.html'%}
+            {% endfor %}
+        {% endif %}
         <!--return back-->
         <div style='margin-bottom:10px'>
             <a href="{%url 'division' %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>
@@ -47,11 +53,11 @@
             <td>{{ d.has_treatement}}</td>   
             <td>{{ d.product}}</td>
             <td>{{ d.planning}}</td>
-            <td><a href="{% url 'material' d.id %}">Material</a></td>
-            <td><a href="{% url 'calendar' d.id %}">Calendar</a></td>
+            <td><a href="{% url 'material' d.id %}" style="text-decoration: none;">Material</a></td>
+            <td><a href="{% url 'calendar' d.id %}" style="text-decoration: none; ">Calendar</a></td>
             {%if d.has_treatement %}
-                <td><a href="{% url 'configTrait' d.id %}">Calendar Config Treatment</a></td>
-                <td><a href="{% url 'configCpordo' d.id %}">Calendar Config CpOrdo</a></td>
+                <td><a href="{% url 'configTrait' d.id %}"style="text-decoration: none; ">Calendar Config Treatment</a></td>
+                <td><a href="{% url 'configCpordo' d.id %}"style="text-decoration: none; ">Calendar Config CpOrdo</a></td>
 
             {%else%}
                 <td>N/A</td>

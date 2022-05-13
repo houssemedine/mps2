@@ -14,11 +14,7 @@ class BaseModel(models.Model) :
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by= models.CharField(max_length= 30, default='Marwa')
     updated_by = models.CharField(max_length= 30,default='Marwa')
-    deleted_at = models.DateTimeField(auto_now_add=True)   
-    restored_at = models.DateTimeField(auto_now=True, null=True)
-    deleted_by= models.CharField(max_length= 30, default='Marwa')
-    restored_by = models.CharField(max_length= 30,default='Marwa')
-
+    
     class Meta :
          #Django will not create a database table for this model
          abstract = True 
@@ -38,6 +34,10 @@ class SoftDeleteManager(models.Manager):
 #SoftDeleteModel
 class SoftDeleteModel(models.Model):
     is_deleted = models.BooleanField(null= False, default=False)
+    deleted_by= models.CharField(max_length= 30, default='Marwa')
+    deleted_at = models.DateTimeField(auto_now_add=True,null=True) 
+    restored_at = models.DateTimeField(auto_now=True, null=True)
+    restored_by = models.CharField(max_length= 30,default='Marwa',null=True)
     
     objects = models.Manager()
     undeleted_objects = SoftDeleteManager()
