@@ -16,12 +16,20 @@
         <div class="row">
             <div class="col-12">
                 <div class="card card-primary card-outline">
-                      <div class="card-header">
-                        <h5 class="m-0">Holidays Calendar</h5>
+                      <div class="card-header ui-sortable-handle" >
+                        <h5 class="card-title" ><strong> Calendar</strong></h5>
+                        <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                        </button>
                       </div>
+                    </div>
                       <div class="card-body">
-                        <a class="btn btn-outline-primary" href="{% url 'duplicatecalendar' product %}" style="margin-bottom: 10px;">Duplicate This Calendar </a>
-                        <a class="btn btn-outline-primary" href="{% url 'customcalendar' product %}"style="margin-bottom: 10px;"> Custom Calendar</a><br>
+                        <a class="btn btn-outline-primary" href="{% url 'duplicatecalendar' product %}" style="margin-bottom: 10px;">Duplicate This Calendar <i class="fa-solid fa-calendar"></i> </a>
+                        <a class="btn btn-outline-primary" href="{% url 'customcalendar' product %}"style="margin-bottom: 10px;"> Custom Calendar <i class="fa-solid fa-calendar"></i></a><br>
                         <p>Copy calendar from another product:</p>
 
                         <div>
@@ -230,7 +238,7 @@
         $('#event-modal input[name="Unproductiveness-ratio"]').val(event ? event.unproductiveness_ratio : '');
         $('#event-modal input[name="Efficienty-ratio"]').val(event ? event.efficienty_ratio : '');
         $('#event-modal input[name="start-time"]').val(event ? event.StartTime : '');
-        $('#event-modal input[name="end-time"]').val(event ? event.SndTime : '');
+        $('#event-modal input[name="end-time"]').val(event ? event.EndTime : '');
 
         $('#event-modal').modal();
     }
@@ -371,6 +379,8 @@
                     absenteeism_ratio:{{day.Absenteeism_ratio}},
                     unproductiveness_ratio:{{day.Unproductiveness_ratio}},
                     efficienty_ratio:{{day.Efficienty_ratio}},
+                    EndTime:"{{day.endTime|time:"H:i:s"}}",
+                    StartTime:"{{day.startTime|time:"H:i:s"}}",
                     color:'#0d6efd',
                     
                     

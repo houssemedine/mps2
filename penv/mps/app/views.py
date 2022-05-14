@@ -42,8 +42,13 @@ def update_division(request):
     obj = get_object_or_404(Division, id = id)
     # pass the object as instance in form
     form = DivisionForm(request.POST or None, instance = obj)
-    if request.method == "POST" and form.is_valid():
-        form.save()
+    if request.method == "POST":
+        if form.is_valid():
+            messages.success(request,"Division updated successfully!")
+            form.save()
+        else:
+            messages.error(request,"try again!")
+                
     return redirect("./")
 
 
@@ -53,6 +58,8 @@ def update_division(request):
 def delete_division(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(Division, id = id)
+    #alert message
+    messages.success(request,"Division deleted successfully!")
     # delete object
     obj.soft_delete()
     return redirect("../")
@@ -64,6 +71,8 @@ def delete_division(request, id):
 def restore_division(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(Division, id = id)
+    #alert message
+    messages.success(request,"Division restored successfully!")
     # restore object
     obj.restore() 
     return redirect("../")
@@ -101,8 +110,12 @@ def update_material(request):
     obj = get_object_or_404(Material, id = id)
     # pass the object as instance in form
     form = MaterialForm(request.POST or None, instance = obj)
-    if request.method == "POST" and form.is_valid():
-        form.save()
+    if request.method == "POST":
+        if form.is_valid():
+            messages.success(request,"Material updated successfully!")
+            form.save()
+        else:
+            messages.error(request,"try again!")    
     return redirect(f'./{str(obj.product_id)}/material/')
     
 
@@ -110,6 +123,8 @@ def update_material(request):
 def delete_material(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(Material, id = id)
+    #alert message
+    messages.success(request,"Material deleted successfully!")
     # delete object
     obj.soft_delete()
     return redirect(f'../{str(obj.product_id)}/material/')
@@ -119,6 +134,8 @@ def delete_material(request, id):
 def restore_material(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(Material, id = id)
+    #alert message
+    messages.success(request,"Material restored successfully!")
     # restore object
     obj.restore()
     return redirect(f'../{str(obj.product_id)}/material/')    
@@ -347,8 +364,12 @@ def update_product(request):
     obj = get_object_or_404(Product, id = id)
     # pass the object as instance in form
     form = ProductForm(request.POST or None, instance = obj)
-    if request.method == "POST" and form.is_valid():
-        form.save()
+    if request.method == "POST":
+        if form.is_valid():
+            messages.success(request," Product updated successfully!")  
+            form.save()
+        else:
+            messages.error(request," try again!")        
     return redirect(f'./{str(obj.division_id)}/product/')
     
 
@@ -357,6 +378,7 @@ def update_product(request):
 def delete_product(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(Product, id = id)
+    messages.success(request," Product deleted successfully!")  
     # delete object
     obj.soft_delete()
     return redirect(f'../{str(obj.division_id)}/product/')
@@ -367,6 +389,7 @@ def delete_product(request, id):
 def restore_product(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(Product, id = id)
+    messages.success(request," Product restored successfully!")  
     # restore object
     obj.restore()
     return redirect(f'../{str(obj.division_id)}/product/')
@@ -557,8 +580,12 @@ def update_conf_trait(request):
     obj = get_object_or_404(CalendarConfigurationTreatement, id = id)
     # pass the object as instance in form
     form = CalendarConfigurationTreatementForm(request.POST or None, instance = obj)
-    if request.method == "POST" and form.is_valid():
-        form.save()
+    if request.method == "POST":
+        if form.is_valid():
+            messages.success(request,"CalendarConfigurationTraitement updated successfully!")   
+            form.save()
+        else:
+         messages.error(request,"try again !")           
     return redirect(f'./{str(obj.product_id)}/configTrait')
     
 
@@ -566,6 +593,7 @@ def update_conf_trait(request):
 def delete_conf_trait(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(CalendarConfigurationTreatement, id = id)
+    messages.success(request,"CalendarConfigurationTraitement deleted successfully!")   
     # delete object
     obj.soft_delete()
     return redirect(f'../{str(obj.product_id)}/configTrait')
@@ -576,6 +604,7 @@ def delete_conf_trait(request, id):
 def restore_conf_trait(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(CalendarConfigurationTreatement, id = id)
+    messages.success(request,"CalendarConfigurationTraitement restored successfully!")   
     # restore object
     obj.restore()
     return redirect(f'../{str(obj.product_id)}/configTrait')
@@ -614,8 +643,12 @@ def update_conf_cpordo(request):
     obj = get_object_or_404(CalendarConfigurationCpordo, id = id)
     # pass the object as instance in form
     form = CalendarConfigurationCpordoForm(request.POST or None, instance = obj)
-    if request.method == "POST" and form.is_valid():
-        form.save()
+    if request.method == "POST":
+        if form.is_valid():
+            messages.success(request,"CalendarConfigurationCpordo updated successfully!")
+            form.save()
+        else:
+            messages.error(request,"try again!")    
     return redirect(f'./{str(obj.product_id)}/configCpordo')
     
 
@@ -623,6 +656,7 @@ def update_conf_cpordo(request):
 def delete_conf_cpordo(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(CalendarConfigurationCpordo, id = id)
+    messages.success(request,"CalendarConfigurationCpordo deleted successfully!")
     # delete object
     obj.soft_delete()
     return redirect(f'../{str(obj.product_id)}/configCpordo')
@@ -632,6 +666,7 @@ def delete_conf_cpordo(request, id):
 def restore_conf_cpordo(request, id):
     # fetch the object related to passed id
     obj = get_object_or_404(CalendarConfigurationCpordo, id = id)
+    messages.success(request,"CalendarConfigurationCpordo restored successfully!")
     # restore object
     obj.restore()
     return redirect(f'../{str(obj.product_id)}/configCpordo')
@@ -691,7 +726,9 @@ def save_coois(request):
         if request.method == 'POST' and request.FILES['coois']:
             file=request.FILES['coois']
             import_coois(file,conn)
+           # messages.success(request,"COOIS file uploaded successfully!") 
     except Exception:
+          # messages.success(request,"unable to upload files,not exist or unreadable") 
         print('unable to upload files,not exist or unreadable')
     return redirect("./upload")    
         

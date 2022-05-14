@@ -20,12 +20,20 @@
         <div class="row">
             <div class="col-12">
                 <div class="card card-primary card-outline">
-                      <div class="card-header">
-                        <h5 class="m-0">Materials</h5>
+                      <div class="card-header ui-sortable-handle" >
+                        <h5 class="card-title" ><strong> Material List</strong></h5>
+                        <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                        </button>
                       </div>
+                    </div>
                       <div class="card-body table-responsive p-0" >
                         <div class="card-body" >
-                        <a class="btn btn-outline-primary" data-target="#create" data-toggle="modal" style="margin-bottom: 10px;"> New </a>
+                        <a class="btn btn-outline-primary" data-target="#create" data-toggle="modal" style="margin-bottom: 10px;"> New <i class="fa-solid fa-plus"></i></a>
                         <table class="table table-bordered text-nowrap">
                             <thead >
                                 <tr>
