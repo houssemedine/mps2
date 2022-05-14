@@ -726,9 +726,9 @@ def save_coois(request):
         if request.method == 'POST' and request.FILES['coois']:
             file=request.FILES['coois']
             import_coois(file,conn)
-           # messages.success(request,"COOIS file uploaded successfully!") 
+            messages.success(request,"COOIS file uploaded successfully!") 
     except Exception:
-        #messages.error(request,"unable to upload files,not exist or unreadable") 
+        messages.error(request,"unable to upload files,not exist or unreadable") 
         print('unable to upload files,not exist or unreadable')
     return redirect("./upload")    
         
@@ -743,10 +743,10 @@ def save_zpp(request):
         if request.method == 'POST' and request.FILES['zpp']:
          file=request.FILES['zpp']
          import_zpp(file,conn)
-         #messages.success(request,"ZPP file uploaded successfully!") 
+         messages.success(request,"ZPP file uploaded successfully!") 
          
     except Exception:
-        #messages.error(request,"unable to upload files,not exist or unreadable") 
+        messages.error(request,"unable to upload files,not exist or unreadable") 
         print('unable to upload files,not exist or unreadable')
     return redirect("./upload")     
     
