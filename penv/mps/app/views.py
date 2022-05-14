@@ -728,7 +728,7 @@ def save_coois(request):
             import_coois(file,conn)
            # messages.success(request,"COOIS file uploaded successfully!") 
     except Exception:
-          # messages.success(request,"unable to upload files,not exist or unreadable") 
+        #messages.error(request,"unable to upload files,not exist or unreadable") 
         print('unable to upload files,not exist or unreadable')
     return redirect("./upload")    
         
@@ -743,7 +743,10 @@ def save_zpp(request):
         if request.method == 'POST' and request.FILES['zpp']:
          file=request.FILES['zpp']
          import_zpp(file,conn)
+         #messages.success(request,"ZPP file uploaded successfully!") 
+         
     except Exception:
+        #messages.error(request,"unable to upload files,not exist or unreadable") 
         print('unable to upload files,not exist or unreadable')
     return redirect("./upload")     
     
@@ -760,6 +763,10 @@ def import_coois(file,conn):
     dc.insert(2,'created_by','Marwa')
     dc.insert(3,'updated_by','Marwa')
     dc.insert(4,'is_deleted',False)
+    dc.insert(5,'deleted_by','Marwa')
+    dc.insert(6,'deleted_at',datetime.now())
+    dc.insert(7,'restored_at',datetime.now())
+    dc.insert(8,'restored_by','Marwa')
     
     # Using the StringIO method to set
     # as file object
@@ -780,6 +787,10 @@ def import_coois(file,conn):
                 'created_by',
                 'updated_by',
                 'is_deleted',
+                'deleted_by',
+                'deleted_at',
+                'restored_at',
+                'restored_by',
                 'division',
                 'profit_centre',
                 'order',
@@ -814,6 +825,10 @@ def import_zpp(file,conn):
     dc.insert(2,'created_by','Marwa')
     dc.insert(3,'updated_by','Marwa')
     dc.insert(4,'is_deleted',False)
+    dc.insert(5,'deleted_by','Marwa')
+    dc.insert(6,'deleted_at',datetime.now())
+    dc.insert(7,'restored_at',datetime.now())
+    dc.insert(8,'restored_by','Marwa')
     
     # Using the StringIO method to set
     # as file object
@@ -834,6 +849,10 @@ def import_zpp(file,conn):
                 'created_by',
                 'updated_by',
                 'is_deleted',
+                'deleted_by',
+                'deleted_at',
+                'restored_at',
+                'restored_by',
                 'material',
                 'plan_date',
                 'element',
