@@ -30,68 +30,71 @@
                         </button>
                       </div>
                     </div>
-                      <div class="card-body" >
+<div class="card-body table-responsive p-0" >
+
+<div class="card-body " >
+    
                             
-<a class="btn btn-outline-primary" data-target="#create" data-toggle="modal" style="margin-bottom: 10px;"> New <i class="fa-solid fa-plus"></i></a>
-<table class="table table-bordered text-nowrap">
-    <thead >
-        <tr>
-            <th>ID</th>
-            <th>Program</th>
-            <th>Has Treatment</th>
-            <th>Product</th>         
-            <th>Planning</th>
-            <th>Material</th>
-            <th>Calendar</th>
-            <th>Calendar Config Treatment</th>
-            <th>Calendar Config CpOrdo</th>
-            <th>State</th>
-
-            <th colspan="2">Actions</th>
-            
-        </tr>
-    </thead>
-    <tbody>
-        
-           
-            {% for d in data %}
+    <a class="btn btn-outline-primary" data-target="#create" data-toggle="modal" style="margin-bottom: 10px;"> New <i class="fa-solid fa-plus"></i></a>
+    <table class="table table-bordered text-nowrap">
+        <thead >
             <tr>
-            <td>{{ d.id}}</td> 
-            <td>{{ d.program}}</td>
-            <td>{{ d.has_treatement}}</td>   
-            <td>{{ d.product}}</td>
-            <td>{{ d.planning}}</td>
-            <td><a href="{% url 'material' d.id %}" style="text-decoration: none;">Material</a></td>
-            <td><a href="{% url 'calendar' d.id %}" style="text-decoration: none; ">Calendar</a></td>
-            {%if d.has_treatement %}
-                <td><a href="{% url 'configTrait' d.id %}"style="text-decoration: none; ">Calendar Config Treatment</a></td>
-                <td><a href="{% url 'configCpordo' d.id %}"style="text-decoration: none; ">Calendar Config CpOrdo</a></td>
+                <th>ID</th>
+                <th>Program</th>
+                <th>Has Treatment</th>
+                <th>Product</th>         
+                <th>Planning</th>
+                <th>Material</th>
+                <th>Calendar</th>
+                <th>Calendar Config Treatment</th>
+                <th>Calendar Config CpOrdo</th>
+                <th>State</th>
 
-            {%else%}
-                <td>N/A</td>
-                <td>N/A</td>
-            {%endif%}
-            {% if d.is_deleted%} 
-            <td style="color: red;">Deleted</td> 
-            {%else%} 
-            <td >Active</td> 
-            {%endif%}
-            <td>
-                {% if d.is_deleted%}
-                <button class="btn" data-toggle="modal" data-target="#restore" data-id="{{d.id}}" data-product="{{d.product}}"><i class="fa-solid fa-arrow-rotate-left" style="color: #0d6efd;"></i></button>
-                {%else%}
-               <button class="btn" data-toggle="modal" data-target="#update" data-id="{{d.id}}" data-traitement="{{d.has_treatement}}" data-product="{{d.product}}" data-program="{{d.program}}" data-planning="{{d.planning}}"  ><i class="fa-solid fa-pen" style="color: rgb(35, 35, 80);"></i></button>
-               <button class="btn" data-toggle="modal" data-target="#delete" data-id="{{d.id}}" data-product="{{d.product}}"><i class="fa-solid fa-trash" style="color: #dc3545;"></i></button>
-               {%endif%}
-            </td>
+                <th colspan="2">Actions</th>
+                
             </tr>
-            {% endfor %}
-                  
-</table>
+        </thead>
+        <tbody>
+            
+            
+                {% for d in data %}
+                <tr>
+                <td>{{ d.id}}</td> 
+                <td>{{ d.program}}</td>
+                <td>{{ d.has_treatement}}</td>   
+                <td>{{ d.product}}</td>
+                <td>{{ d.planning}}</td>
+                <td><a href="{% url 'material' d.id %}" style="text-decoration: none;">Material</a></td>
+                <td><a href="{% url 'calendar' d.id %}" style="text-decoration: none; ">Calendar</a></td>
+                {%if d.has_treatement %}
+                    <td><a href="{% url 'configTrait' d.id %}"style="text-decoration: none; ">Calendar Config Treatment</a></td>
+                    <td><a href="{% url 'configCpordo' d.id %}"style="text-decoration: none; ">Calendar Config CpOrdo</a></td>
+
+                {%else%}
+                    <td>N/A</td>
+                    <td>N/A</td>
+                {%endif%}
+                {% if d.is_deleted%} 
+                <td style="color: red;">Deleted</td> 
+                {%else%} 
+                <td >Active</td> 
+                {%endif%}
+                <td>
+                    {% if d.is_deleted%}
+                    <button class="btn" data-toggle="modal" data-target="#restore" data-id="{{d.id}}" data-product="{{d.product}}"><i class="fa-solid fa-arrow-rotate-left" style="color: #0d6efd;"></i></button>
+                    {%else%}
+                <button class="btn" data-toggle="modal" data-target="#update" data-id="{{d.id}}" data-traitement="{{d.has_treatement}}" data-product="{{d.product}}" data-program="{{d.program}}" data-planning="{{d.planning}}"  ><i class="fa-solid fa-pen" style="color: rgb(35, 35, 80);"></i></button>
+                <button class="btn" data-toggle="modal" data-target="#delete" data-id="{{d.id}}" data-product="{{d.product}}"><i class="fa-solid fa-trash" style="color: #dc3545;"></i></button>
+                {%endif%}
+                </td>
+                </tr>
+                {% endfor %}
+                    
+    </table>
 
 </div>
-     <div class="card-footer clearfix">
-     </div>
+
+ </div>
      </div>
      </div>
     </div>
@@ -137,6 +140,7 @@
                  <!-- form with crispy -->
                  {{ form|crispy}}
                  <input type="hidden" id="id" name="id" value="">
+                 <input type="checkbox" id="test" name="test">
                  
         </div>
             <div class="modal-footer">
@@ -219,8 +223,9 @@
     $(this).find(".modal-body #id_planning").val(planning); 
     console.log(traitement);
     if  (traitement == 'True') {
-        document.getElementById("id_has_treatement").checked=true;
+        document.getElementById("test").checked=true;
     } 
+
     });
 
 </script>
