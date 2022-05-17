@@ -135,7 +135,7 @@ class WorkData(BaseModel,SoftDeleteModel):
     # with their startTime
     #To Do: Convert strTime to string
     def __str__(self):
-        return str(self.startTime)
+        return str(self.date)
 
 #Calendar configuration traitement Model 
 class CalendarConfigurationTreatement(BaseModel,SoftDeleteModel):

@@ -20,8 +20,8 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href= " {% static 'adminlte/fontawesome-free/css/all.min.css' %} ">
   <!-- style -->
-  
   <link rel="stylesheet" href= " {% static 'css/style.css' %} ">
+ 
 
   
 
@@ -87,7 +87,7 @@
     <a href="" class="brand-link"  style="text-decoration: none; ">
       <img src="{% static 'img/mps2.jpg' %}" alt="mps" class="brand-image img-circle elevation-3"
            style="opacity: .8">
-      <span class="brand-text font-weight-normal" style="font-style: italic" >planning tools</span>
+      <span class="brand-text font-italic" style="font-family: 'Times New Roman';" >planning tools</span>
     </a>
 
     <!-- Sidebar -->
@@ -131,7 +131,7 @@
               </li>  
               <li class="nav-item">
                 <a href="{% url 'uploadfiles' %}" class="nav-link">
-                  <i class="far far fa-circle nav-icon"></i>
+                  <i class="far fa-solid fa-file nav-icon"></i>
                   <p>Files</p>
                 </a>
               </li>

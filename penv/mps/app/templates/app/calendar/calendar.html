@@ -79,7 +79,7 @@
   
           <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-              <button type="submit" class="btn btn-primary"   name ='delete' >Delete</button>
+              <button type="submit" class="btn btn-danger"   name ='delete' >Delete</button>
           </div>
        </form>
       </div>  
@@ -135,7 +135,7 @@
   
           <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-              <button type="submit" class="btn btn-primary" id="save-event" name ='save-event'>Save</button>
+              <button type="submit" class="btn btn-color" id="save-event" name ='save-event'>Save</button>
           </div>
        </form>
        <!--work hours form -->
@@ -214,7 +214,7 @@
  
          <div class="modal-footer">
              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-             <button type="submit" class="btn btn-primary" id="save-work" name ='save-work'>Save</button>
+             <button type="submit" class="btn btn-color" id="save-work" name ='save-work'>Save</button>
          </div>
       </form>
       </div>  
@@ -239,7 +239,7 @@
         $('#event-modal input[name="Efficienty-ratio"]').val(event ? event.efficienty_ratio : '');
         $('#event-modal input[name="start-time"]').val(event ? event.StartTime : '');
         $('#event-modal input[name="end-time"]').val(event ? event.EndTime : '');
-
+        
         $('#event-modal').modal();
     }
     
@@ -264,6 +264,7 @@
             absenteeism_ratio: $('#event-modal input[name="Absenteeism-ratio"]').val(),
             unproductiveness_ratio: $('#event-modal input[name="Unproductiveness-ratio"]').val(),
             efficienty_ratio: $('#event-modal input[name="Efficienty-ratio"]').val(),
+
             
 
         }
@@ -283,6 +284,7 @@
                     dataSource[i].absenteeism_ratio = event.absenteeism_ratio;
                     dataSource[i].unproductiveness_ratio = event.unproductiveness_ratio;
                     dataSource[i].efficienty_ratio = event.efficienty_ratio;
+
                 }
             }
         }

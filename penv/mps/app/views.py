@@ -198,8 +198,13 @@ def create_calendar(request,product):
                 endDate= datetime.strptime(endDate,'%m/%d/%Y')
                 # check if day and product_id exists in DB don't save else save
                 if (startDate.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days] ) and (int(product) in products):
-                    pass
+                    exist_day =HolidaysCalendar.undeleted_objects.all().filter(holidaysDate = startDate) 
+                    exist_day.delete()
+                    data = HolidaysCalendar(name=name,holidaysDate=startDate,product_id =product)
+                    data.save()
                 else:
+                    exist_on_days = WorkData.undeleted_objects.all().filter(date = startDate) 
+                    exist_on_days.delete()
                     data = HolidaysCalendar(name=name,holidaysDate=startDate,product_id =product)
                     data.save()
             # add list of days in database       
@@ -213,10 +218,15 @@ def create_calendar(request,product):
                     print(day)
                     # check if day and product_id exists in DB don't save else save
                     if (day.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days]) and (int(product) in products):
-                     pass
+                        exist_day =HolidaysCalendar.undeleted_objects.all().filter(holidaysDate = day) 
+                        exist_day.delete()
+                        data = HolidaysCalendar(name=name,holidaysDate=day,product_id =product)
+                        data.save()
                     else :
-                     data = HolidaysCalendar(name=name,holidaysDate=day,product_id =product)
-                     data.save()
+                        exist_on_days = WorkData.undeleted_objects.all().filter(date = day) 
+                        exist_on_days.delete()
+                        data = HolidaysCalendar(name=name,holidaysDate=day,product_id =product)
+                        data.save()
     return redirect("../calendar")
 
 
@@ -305,8 +315,13 @@ def create_custom_calendar(request,product):
                 endDate= datetime.strptime(endDate,'%m/%d/%Y')
                 # check if day and product_id exists in DB don't save else save
                 if (startDate.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days] ) and (int(product) in products):
-                    pass
+                    exist_day =HolidaysCalendar.undeleted_objects.all().filter(holidaysDate = startDate, owner = 'marwa') 
+                    exist_day.delete()
+                    data = HolidaysCalendar(name=name,holidaysDate=startDate,product_id =product, owner = owner)
+                    data.save()
                 else:
+                    exist_on_days = WorkData.undeleted_objects.all().filter(date = startDate, owner = 'marwa') 
+                    exist_on_days.delete()
                     data = HolidaysCalendar(name=name,holidaysDate=startDate,product_id =product, owner = owner)
                     data.save()
             # add list of days in database       
@@ -319,10 +334,16 @@ def create_custom_calendar(request,product):
                     day= startDate + timedelta(days=i)
                     # check if day and product_id exists in DB don't save else save
                     if (day.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days]) and (int(product) in products):
-                     pass
+                        #delete exist data and save new objects
+                        exist_day =HolidaysCalendar.undeleted_objects.all().filter(holidaysDate = day, owner = 'marwa') 
+                        exist_day.delete()
+                        data = HolidaysCalendar(name=name,holidaysDate=day,product_id =product, owner = owner)
+                        data.save()   
                     else :
-                     data = HolidaysCalendar(name=name,holidaysDate=day,product_id =product, owner = owner)
-                     data.save()    
+                        exist_on_days = WorkData.undeleted_objects.all().filter(date = day, owner = 'marwa') 
+                        exist_on_days.delete()
+                        data = HolidaysCalendar(name=name,holidaysDate=day,product_id =product, owner = owner)
+                        data.save()    
     return redirect("../customcalendar")
 
 
@@ -452,8 +473,14 @@ def work_data(request,product):
                 endDate= datetime.strptime(endDate,'%m/%d/%Y')
                 # check if day and product_id exists in DB don't save else save
                 if (startDate.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days] ) and (int(product) in products):
-                    pass
+                    exist_day =WorkData.undeleted_objects.all().filter(date = startDate) 
+                    exist_day.delete()
+                    data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product)
+                    data.save()
+                    return redirect("../calendar")
                 else:
+                    exist_off_days = HolidaysCalendar.undeleted_objects.all().filter(holidaysDate= startDate) 
+                    exist_off_days.delete()
                     data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product)
                     data.save()
                     return redirect("../calendar")
@@ -461,16 +488,23 @@ def work_data(request,product):
             else: 
                 startDate=datetime.strptime(startDate,'%m/%d/%Y')
                 endDate=datetime.strptime(endDate,'%m/%d/%Y')
-                print(startDate)
-                print(endDate)
                 delta= endDate-startDate
                 day=""
                 for i in range(delta.days+1):
                     day= startDate + timedelta(days=i)
                     # check if day and product_id exists in DB don't save else save
                     if (day.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days]) and (int(product) in products):
-                        pass
+                        exist_days = WorkData.undeleted_objects.all().filter(date = day) 
+                        exist_days.delete()
+                        data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product)
+                        data.save()     
                     else :
+                        #replace holidays with work data
+                        #get holidays 
+                        exist_off_days = HolidaysCalendar.undeleted_objects.all().filter(holidaysDate = day) 
+                        #delete exist_off_days
+                        exist_off_days.delete()
+                        #save work data
                         data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product)
                         data.save()
                 return redirect("../calendar")       
@@ -531,8 +565,17 @@ def custom_work(request,product):
                 endDate= datetime.strptime(endDate,'%m/%d/%Y')
                     # check if day and product_id exists in DB don't save else save
                 if (startDate.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days] ) and (int(product) in products):
-                    pass
+                    exist_day =WorkData.undeleted_objects.all().filter(date = startDate, owner = 'marwa') 
+                    exist_day.delete()
+                    data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product,owner = owner)
+                    data.save()
+                    return redirect("../customcalendar")
                 else:
+                    #replace holiday with workdata
+                    exist_off_days = HolidaysCalendar.undeleted_objects.all().filter(holidaysDate= startDate, owner = 'marwa') 
+                    #delete holidays
+                    exist_off_days.delete()
+                    #save data work object
                     data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product,owner = owner)
                     data.save()
                     return redirect("../customcalendar")
@@ -548,8 +591,17 @@ def custom_work(request,product):
                     day= startDate + timedelta(days=i)
                     # check if day and product_id exists in DB don't save else save
                     if (day.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days]) and (int(product) in products):
-                        pass
+                        exist_days = WorkData.undeleted_objects.all().filter(date = day, owner = 'marwa') 
+                        exist_days.delete()
+                        data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product,owner = owner)
+                        data.save()
                     else :
+                        #replace holidays with work data
+                        #get holidays 
+                        exist_off_days = HolidaysCalendar.undeleted_objects.all().filter(holidaysDate = day, owner = 'marwa') 
+                        #delete exist_off_days
+                        exist_off_days.delete()
+                        #save work data
                         data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product,owner = owner)
                         data.save()
                 return redirect("../customcalendar")
@@ -749,7 +801,6 @@ def save_zpp(request):
         messages.error(request,"unable to upload files,not exist or unreadable") 
         print('unable to upload files,not exist or unreadable')
     return redirect("./upload")     
-    
     
     
 #********************************Upload COOIS************************************

@@ -2,6 +2,10 @@ from django.urls import path
 from app import views
 
 urlpatterns = [
+    
+    #url for Home 
+    path('home/',views.home_page,name='home'),
+    
     #urls for CRUD Division
     path('division/',views.read_division,name='division'),
     path('create/',views.create_division,name='create'),
@@ -25,6 +29,9 @@ urlpatterns = [
 
     #urls for Duplicate Calendar
     path('product/<product>/duplicatecalendar/',views.duplicate_calendar,name='duplicatecalendar'),
+
+    #urls for copy calendar from product
+    path('product/<product>/copycalendar/',views.copy_calendar,name='copycalendar'), 
     
     #urls for Custom Calendar
     path('product/<product>/customcalendar/',views.custom_calendar,name='customcalendar'),
@@ -58,12 +65,6 @@ urlpatterns = [
     path('product/updateconfigCpordo',views.update_conf_cpordo,name='updateconfigCpordo'),
     path('product/<id>/deleteconfigCpordo',views.delete_conf_cpordo,name='deleteconfigCpordo'),
     path('product/<id>/restoreconfigCpordo',views.restore_conf_cpordo,name='restoreconfigCpordo'),
-    
-    #url for Home 
-    path('home/',views.home_page,name='home'),
-    
-    #urls for copy calendar from product
-    path('product/<product>/copycalendar/',views.copy_calendar,name='copycalendar'), 
     
     #urls for upload files
     path('files/upload',views.upload_files,name='uploadfiles'), 
