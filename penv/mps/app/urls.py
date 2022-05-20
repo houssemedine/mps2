@@ -70,6 +70,10 @@ urlpatterns = [
     path('files/upload',views.upload_files,name='uploadfiles'), 
     path('files/savecoois',views.save_coois,name='savecoois'),
     path('files/savezpp',views.save_zpp,name='savezpp'), 
+    
+    #url for shopfloor
+    path('shopfloor/',views.Shopfloor,name='shopfloor'), 
+    
      
     
     

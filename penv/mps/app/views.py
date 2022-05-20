@@ -1,5 +1,6 @@
 from genericpath import exists
 from django.shortcuts import render ,redirect ,get_object_or_404
+from numpy import divide
 from app.models import Division,Material,HolidaysCalendar,Product,WorkData,CalendarConfigurationTreatement,CalendarConfigurationCpordo,Coois,Zpp
 from app.forms import DivisionForm,MaterialForm,ProductForm,CalendarConfigurationCpordoForm,CalendarConfigurationTreatementForm 
 from datetime import  datetime, timedelta
@@ -735,6 +736,7 @@ def config_cpordo(request ,product):
 #********************** Home****************************
 
 def home_page(request):
+    
     return render(request,'app/home/index.html')
 
 #*******************copy calendar************************************
@@ -790,16 +792,20 @@ def save_zpp(request):
     #Delete zpp data 
     zpp_data = Zpp.undeleted_objects.all().filter(created_by='Marwa')
     zpp_data.delete()
-    #Save file to DB
-    try:
-        if request.method == 'POST' and request.FILES['zpp']:
+    if request.method == 'POST' and request.FILES['zpp']:
          file=request.FILES['zpp']
          import_zpp(file,conn)
-         messages.success(request,"ZPP file uploaded successfully!") 
+    
+    #Save file to DB
+    # try:
+    #     if request.method == 'POST' and request.FILES['zpp']:
+    #      file=request.FILES['zpp']
+    #      import_zpp(file,conn)
+    #      messages.success(request,"ZPP file uploaded successfully!") 
          
-    except Exception:
-        messages.error(request,"unable to upload files,not exist or unreadable") 
-        print('unable to upload files,not exist or unreadable')
+    # except Exception:
+    #     messages.error(request,"unable to upload files,not exist or unreadable") 
+    #     print('unable to upload files,not exist or unreadable')
     return redirect("./upload")     
     
     
@@ -869,7 +875,8 @@ def import_coois(file,conn):
 
 def import_zpp(file,conn):
     #read file with pandas
-    dc=pd.read_excel(file)
+    dc=pd.read_excel(file,names=['material','plan_date','element','data_element_planif','message','needs','qte_available','date_reordo','supplier','customer'])
+    print(dc)
     #insert informations into file
     dc.insert(0,'created_at',datetime.now())
     dc.insert(1,'updated_at',datetime.now())
@@ -880,7 +887,13 @@ def import_zpp(file,conn):
     dc.insert(6,'deleted_at',datetime.now())
     dc.insert(7,'restored_at',datetime.now())
     dc.insert(8,'restored_by','Marwa')
+    # delete the slash and the part after the slash
+    dc['data_element_planif']= dc['data_element_planif'].str.split("/").str[0]
+    # delete the zeros on the left
+    dc['data_element_planif']= dc['data_element_planif'].str.lstrip("0")
     
+    
+    print(dc)
     # Using the StringIO method to set
     # as file object
     print(dc.head(10))
@@ -913,11 +926,99 @@ def import_zpp(file,conn):
                 'qte_available',
                 'date_reordo',
                 'supplier',
-                'customer',     
+                'customer', 
+                    
             ],
 
             null="",
             sep=",",
+            
 
         )
     conn.commit()
+
+#**********************Shopfloor****************************
+
+def Shopfloor(request):
+    #Get Data from DB
+    zpp_data=Zpp.objects.values('material','data_element_planif','created_by','message','date_reordo')
+    coois_data= Coois.objects.all().values()
+    material_data=Material.objects.values('material','product','created_by','workstation','AllocatedTime','Leadtime','Allocated_Time_On_Workstation','Smooth_Family')
+    division_data= Division.objects.values('id','name')
+    product_data= Product.objects.values('id' ,'division')
+    #data=Material.objects.filter(product =Product.objects.filter('division'))
+    #print(data)
+    
+    # df[materia] contain 2 col: material, division (realtionship djano),  
+    # df[coois] contain 2 col: material, division,      
+    # join[material / coois] by (material,division)
+    #Convert to DataFrame
+    df_zpp=pd.DataFrame(list(zpp_data))
+    df_coois=pd.DataFrame(list(coois_data))
+    df_material=pd.DataFrame(list(material_data))
+    df_division=pd.DataFrame(list(division_data))
+    df_product=pd.DataFrame(list(product_data))
+    # material=Material.objects.values()
+    # product=material.product.division
+    data_relation=pd.DataFrame(list(Material.objects.all().prefetch_related('product_set').values()))
+    print('#'*50)
+    print('data_realtion')
+    print(data_relation)
+    print('#'*50)
+    
+    # print('#'* 50)
+    # print(df_material)
+    # print(df_division)
+    # print(df_product)
+    
+    # df_join_division_product = df_product.join(df_division, how='left', lsuffix='_left', rsuffix='_right')
+    # print('#'* 50)
+    # print(df_join_division_product)
+    # df_join= df_material.join(df_join_division_product, how='left', lsuffix='_left', rsuffix='_right')
+    # print('#'* 50)
+    # print(df_join)
+    
+    
+    
+    #add column key for zpp (concatinate  material and data_element_planif and created_by  )
+    df_zpp['key']=df_zpp['material'].astype(str)+df_zpp['data_element_planif'].astype(str)+df_zpp['created_by'].astype(str) 
+    #add column key for coois (concatinate material, order, created_by )    
+    df_coois['key']=df_coois['material'].astype(str)+df_coois['order'].astype(str)+df_coois['created_by'].astype(str)
+    #add column key for coois (concatinate material,division,profit_centre, created_by )    
+    df_coois['key2']=df_coois['material'].astype(str)+df_coois['division'].astype(str)
+    #print('*'*50)
+    #print(df_coois['key2'])
+    #add column key for material (concatinate material, created_by )  
+    df_material['key']=df_material['material'].astype(str)+df_material['created_by'].astype(str) 
+    
+    #print('*'*50)
+    #print(df_material)
+       
+    #Convert df_zpp to dict
+    df_zpp_dict_message=dict(zip(df_zpp.key, df_zpp.message))
+    df_zpp_dict_date_reordo=dict(zip(df_zpp.key, df_zpp.date_reordo))
+    #Merge ZPP and COOIS with keys
+    df_coois['message']=df_coois['key'].map(df_zpp_dict_message)
+    df_coois['date_reordo']=df_coois['key'].map(df_zpp_dict_date_reordo)
+    
+    #convert df_material to dict
+    df_material_dict_AllocatedTime= dict((zip(df_material.key,df_material.AllocatedTime)))
+    df_material_dict_Leadtime= dict((zip(df_material.key,df_material.Leadtime)))
+    df_material_dict_workstation= dict((zip(df_material.key,df_material.workstation)))
+    df_material_dict_Allocated_Time_On_Workstation= dict((zip(df_material.key,df_material.Allocated_Time_On_Workstation)))
+    df_material_dict_Smooth_Family= dict((zip(df_material.key,df_material.Smooth_Family)))
+    
+    
+    #Merge coois and material with keys
+    df_coois['AllocatedTime']=df_coois['key2'].map(df_material_dict_AllocatedTime)
+    df_coois['Leadtime']=df_coois['key2'].map(df_material_dict_Leadtime)
+    df_coois['workstation']=df_coois['key2'].map(df_material_dict_workstation)
+    df_coois['Allocated_Time_On_Workstation']=df_coois['key2'].map(df_material_dict_Allocated_Time_On_Workstation)
+    df_coois['Smooth_Family']=df_coois['key2'].map(df_material_dict_Smooth_Family)
+    
+    
+    
+    #print('*'*50)
+    #print(df_coois)
+   
+    return render(request,'app/Shopfloor/Shopfloor.html')    
