@@ -201,3 +201,41 @@ class Zpp(BaseModel,SoftDeleteModel):
     # with their element
     def __str__(self):
         return  str(self.element)      
+
+class Shopfloor(BaseModel,SoftDeleteModel):
+    plant=models.IntegerField(null=True)
+    profit_centre=models.CharField(max_length=50,null=True)
+    order=models.CharField(max_length=50)
+    material= models.CharField(max_length=50,null=True)
+    designation=models.CharField(max_length=50,null=True)
+    order_type=models.CharField(max_length=50,null=True)
+    order_quantity=models.IntegerField()
+    date_start_plan=models.DateField(null=True)
+    date_end_plan=models.DateField(null=True)  
+    fixation=models.CharField(max_length=50,null=True)
+    date_reordo=models.DateField(null=True)
+    message= models.FloatField(null=True)
+    order_stat=models.CharField(max_length=50,null=True)
+    customer_order=models.CharField(max_length=50,null=True)
+    date_end_real=models.DateField(null=True) 
+    AllocatedTime =models.FloatField()
+    Leadtime =models.FloatField()
+    workstation= models.CharField(max_length=200)
+    Allocated_Time_On_Workstation =models.FloatField()
+    Smooth_Family=models.CharField(max_length=50)
+    Ranking=models.CharField(max_length=50,null=True)
+    Freeze_end_date=models.DateField(null=True)
+    Remain_to_do=models.FloatField(null=True)
+    
+    # renames the instances of the Shopfloor
+    # with their order
+    # def __str__(self):
+    #     return  str(self.order)   
+
+
+
+    
+    
+    
+     
+        

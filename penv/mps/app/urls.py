@@ -72,7 +72,9 @@ urlpatterns = [
     path('files/savezpp',views.save_zpp,name='savezpp'), 
     
     #url for shopfloor
-    path('shopfloor/',views.Shopfloor,name='shopfloor'), 
+    path('shopfloor/',views.shopfloor,name='shopfloor'),
+    path('shopfloor/createshopfloor/',views.create_shopfloor,name='createshopfloor'), 
+     
     
      
     

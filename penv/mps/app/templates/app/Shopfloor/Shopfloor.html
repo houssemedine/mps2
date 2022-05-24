@@ -12,11 +12,16 @@
                       <div class="card-header">
                         <h5 class="m-0">Planning</h5>
                       </div>
-                      <div class="card-body table-responsive p-0" >
+                      <div class="card-body table-responsive p-0  " >
                       <div class="card-body">
-                        <table class="table table-bordered text-nowrap">
+                        <form method="POST" action="{%url 'createshopfloor' %}">
+                            <!-- Security token -->
+                            {% csrf_token %}
+                        					
+                         <table class="table table-bordered text-nowrap">
                             <thead >
                                 <tr>
+                                    <th>id</th>
                                     <th>Plant</th>
                                     <th>Profit Centre</th>
                                     <th>Order</th>
@@ -29,7 +34,6 @@
                                     <th>Freeze </th>
                                     <th>Reschedule date</th>
                                     <th>Exception message</th>
-                                    <th>Firming indicator</th>
                                     <th>System Status</th>
                                     <th>Sales Order</th>
                                     <th>Actual finish date</th>
@@ -45,7 +49,56 @@
                                     <th>Advance/delay</th>
                                 </tr>
                             </thead>
-                            </table>
+                            <tbody>
+            
+            
+                                
+                                {% for index,data in records.iterrows %}
+                                <tr>
+                                
+                                    <!--coois-->
+                                    <!-- <td>{{data.id}}</td> -->
+                                    <td><input id="index" name="index" type="number" class="form-control"  value={{data.id}}></td> 
+                                    <td><input id="division " name="division" type="number" class="form-control"  value="{{ data.division }}"></td> 
+                                    <td><input id="profit_centre" name="profit_centre" type="text" class="form-control"  value="{{ data.profit_centre}}"  ></td>
+                                    <td><input id="order" name="order" type="text" class="form-control"  value="{{data.order}}"  ></td>   
+                                    <td><input id="material" name="material" type="text" class="form-control"  value="{{data.material}}"  ></td>
+                                    <td><input id="designation" name="designation" type="text" class="form-control"  value="{{ data.designation}}"  ></td>
+                                    <td><input id="order_type" name="order_type" type="text" class="form-control"  value="{{ data.order_type}}"  ></td>
+                                    <td><input id="order_quantity" name="order_quantity" type="text" class="form-control"  value="{{ data.order_quantity}}"  ></td>
+                                    <td><input id="date_start_plan" name="date_start_plan" type="text" class="form-control"  value="{{ data.date_start_plan | date:'d/m/Y'}}"  ></td>
+                                    <td><input id="date_end_plan" name="date_end_plan" type="text" class="form-control"  value="{{ data.date_end_plan | date:'d/m/Y'}}"  ></td>
+                                    <td><input id="fixation" name="fixation" type="text" class="form-control"  value="{{ data.fixation}}"  ></td>
+                                    <!--zpp-->
+                                    <td><input id="date_reordo" name="date_reordo" type="text" class="form-control"  value="{{ data.date_reordo | date:'d/m/Y'}}"  ></td>
+                                    <td><input id="message" name="message" type="text" class="form-control"  value="{{ data.message}}"  ></td>
+                                    <!--coois-->
+                                    <td><input id="order_stat" name="order_stat" type="text" class="form-control"  value="{{ data.order_stat }}"  ></td>
+                                    <td><input id="customer_order" name="customer_order" type="text" class="form-control"  value="{{ data.customer_order}}"  ></td>
+                                    <td><input id="date_end_real" name="date_end_real" type="text" class="form-control"  value="{{data.date_end_real | date:'d/m/Y'}}"  ></td>
+                                    <!--material-->
+                                    <td><input id="AllocatedTime" name="AllocatedTime" type="text" class="form-control"  value="{{ data.AllocatedTime}}"  ></td>
+                                    <td><input id="Leadtime" name="Leadtime" type="text" class="form-control"  value="{{data.Leadtime}}"  ></td>
+                                    <td><input id="workstation" name="workstation" type="text" class="form-control"  value="{{data.workstation}}"  ></td>
+                                    <td><input id="Allocated_Time_On_Workstation" name="Allocated_Time_On_Workstation" type="text" class="form-control"  value="{{ data.Allocated_Time_On_Workstation}}"  ></td>
+                                    <td><input id="Smooth_Family" name="Smooth_Family" type="text" class="form-control"  value="{{ data.Smooth_Family}}"  ></td>
+                                    <td><input id="Ranking" name="Ranking" type="text" class="form-control" ></td>
+                                    <td><input id="Freeze end date" name="Freeze end date" type="text" class="form-control"  ></td>
+                                    <td><input id="Remain to do" name="Remain to do" type="text" class="form-control"  ></td>
+                                    
+                                    </tr>
+                                    {%empty%}
+                                    <tr><td> Data Empty</td></tr>
+                                    {% endfor %}
+                            </tbody>
+                                
+                         </table>
+
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                            <input type="submit" class="btn btn:hover btn-color" value="Save">
+                        
+                         </form>
+                        
                       </div>
                     </div>
                 </div>

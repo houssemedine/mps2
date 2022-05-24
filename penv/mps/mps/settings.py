@@ -43,7 +43,8 @@ INSTALLED_APPS = [
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
+# to disable the check
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

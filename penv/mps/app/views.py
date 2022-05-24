@@ -1,12 +1,11 @@
-from genericpath import exists
 from django.shortcuts import render ,redirect ,get_object_or_404
-from numpy import divide
-from app.models import Division,Material,HolidaysCalendar,Product,WorkData,CalendarConfigurationTreatement,CalendarConfigurationCpordo,Coois,Zpp
+from app.models import Division,Material,HolidaysCalendar,Product,WorkData,CalendarConfigurationTreatement,CalendarConfigurationCpordo,Coois,Zpp,Shopfloor
 from app.forms import DivisionForm,MaterialForm,ProductForm,CalendarConfigurationCpordoForm,CalendarConfigurationTreatementForm 
 from datetime import  datetime, timedelta
 from io import StringIO
 import psycopg2, pandas as pd
 from django.contrib import messages
+
 
 # Create your views here.
 #Comment Houssem
@@ -792,20 +791,17 @@ def save_zpp(request):
     #Delete zpp data 
     zpp_data = Zpp.undeleted_objects.all().filter(created_by='Marwa')
     zpp_data.delete()
-    if request.method == 'POST' and request.FILES['zpp']:
-         file=request.FILES['zpp']
-         import_zpp(file,conn)
     
     #Save file to DB
-    # try:
-    #     if request.method == 'POST' and request.FILES['zpp']:
-    #      file=request.FILES['zpp']
-    #      import_zpp(file,conn)
-    #      messages.success(request,"ZPP file uploaded successfully!") 
+    try:
+        if request.method == 'POST' and request.FILES['zpp']:
+         file=request.FILES['zpp']
+         import_zpp(file,conn)
+         messages.success(request,"ZPP file uploaded successfully!") 
          
-    # except Exception:
-    #     messages.error(request,"unable to upload files,not exist or unreadable") 
-    #     print('unable to upload files,not exist or unreadable')
+    except Exception:
+        messages.error(request,"unable to upload files,not exist or unreadable") 
+        print('unable to upload files,not exist or unreadable')
     return redirect("./upload")     
     
     
@@ -939,60 +935,35 @@ def import_zpp(file,conn):
 
 #**********************Shopfloor****************************
 
-def Shopfloor(request):
-    #Get Data from DB
-    zpp_data=Zpp.objects.values('material','data_element_planif','created_by','message','date_reordo')
-    coois_data= Coois.objects.all().values()
-    material_data=Material.objects.values('material','product','created_by','workstation','AllocatedTime','Leadtime','Allocated_Time_On_Workstation','Smooth_Family')
-    division_data= Division.objects.values('id','name')
-    product_data= Product.objects.values('id' ,'division')
-    #data=Material.objects.filter(product =Product.objects.filter('division'))
-    #print(data)
+def shopfloor(request):
     
-    # df[materia] contain 2 col: material, division (realtionship djano),  
-    # df[coois] contain 2 col: material, division,      
-    # join[material / coois] by (material,division)
+    #Get Data from DB
+    zpp_data=Zpp.objects.filter(created_by= 'Marwa').values('material','data_element_planif','created_by','message','date_reordo')
+    coois_data= Coois.objects.all().filter(created_by= 'Marwa').values()
+    material_data=Material.objects.values('material','product__program','product__division__name','created_by','workstation','AllocatedTime','Leadtime','Allocated_Time_On_Workstation','Smooth_Family')
+
+   
+
     #Convert to DataFrame
     df_zpp=pd.DataFrame(list(zpp_data))
     df_coois=pd.DataFrame(list(coois_data))
     df_material=pd.DataFrame(list(material_data))
-    df_division=pd.DataFrame(list(division_data))
-    df_product=pd.DataFrame(list(product_data))
-    # material=Material.objects.values()
-    # product=material.product.division
-    data_relation=pd.DataFrame(list(Material.objects.all().prefetch_related('product_set').values()))
-    print('#'*50)
-    print('data_realtion')
-    print(data_relation)
-    print('#'*50)
-    
-    # print('#'* 50)
-    # print(df_material)
-    # print(df_division)
-    # print(df_product)
-    
-    # df_join_division_product = df_product.join(df_division, how='left', lsuffix='_left', rsuffix='_right')
-    # print('#'* 50)
-    # print(df_join_division_product)
-    # df_join= df_material.join(df_join_division_product, how='left', lsuffix='_left', rsuffix='_right')
-    # print('#'* 50)
-    # print(df_join)
+    df_material=df_material.rename(columns={'product__program':'program','product__division__name':'division'})
     
     
-    
+
     #add column key for zpp (concatinate  material and data_element_planif and created_by  )
     df_zpp['key']=df_zpp['material'].astype(str)+df_zpp['data_element_planif'].astype(str)+df_zpp['created_by'].astype(str) 
     #add column key for coois (concatinate material, order, created_by )    
     df_coois['key']=df_coois['material'].astype(str)+df_coois['order'].astype(str)+df_coois['created_by'].astype(str)
-    #add column key for coois (concatinate material,division,profit_centre, created_by )    
-    df_coois['key2']=df_coois['material'].astype(str)+df_coois['division'].astype(str)
-    #print('*'*50)
-    #print(df_coois['key2'])
-    #add column key for material (concatinate material, created_by )  
-    df_material['key']=df_material['material'].astype(str)+df_material['created_by'].astype(str) 
     
-    #print('*'*50)
-    #print(df_material)
+    
+    #add column key for material (concatinate material, created_by )  
+    df_material['key']=df_material['material'].astype(str)+df_material['division'].astype(str)+df_material['created_by'].astype(str) 
+    #add column key for coois (concatinate material,division,profit_centre, created_by )    
+    df_coois['key2']=df_coois['material'].astype(str)+df_coois['division'].astype(str)+df_coois['created_by'].astype(str)
+    
+    
        
     #Convert df_zpp to dict
     df_zpp_dict_message=dict(zip(df_zpp.key, df_zpp.message))
@@ -1009,6 +980,7 @@ def Shopfloor(request):
     df_material_dict_Smooth_Family= dict((zip(df_material.key,df_material.Smooth_Family)))
     
     
+    
     #Merge coois and material with keys
     df_coois['AllocatedTime']=df_coois['key2'].map(df_material_dict_AllocatedTime)
     df_coois['Leadtime']=df_coois['key2'].map(df_material_dict_Leadtime)
@@ -1017,8 +989,98 @@ def Shopfloor(request):
     df_coois['Smooth_Family']=df_coois['key2'].map(df_material_dict_Smooth_Family)
     
     
+    records=df_coois
     
-    #print('*'*50)
-    #print(df_coois)
-   
-    return render(request,'app/Shopfloor/Shopfloor.html')    
+    return render(request,'app/Shopfloor/Shopfloor.html',{'records': records} )    
+
+
+#create shopfloor
+def create_shopfloor(request):
+    if request.method=='POST':
+        # get inputs values
+        id = request.POST.getlist('index')
+        division = request.POST.getlist('division')
+        profit_centre = request.POST.getlist('profit_centre')
+        order = request.POST.getlist('order')
+        material = request.POST.getlist('material')
+        designation = request.POST.getlist('designation')
+        order_type = request.POST.getlist('order_type')
+        order_quantity = request.POST.getlist('order_quantity')
+        date_start_plan= request.POST.getlist('date_start_plan')
+        date_end_plan = request.POST.getlist('date_end_plan')
+        fixation = request.POST.getlist('fixation')
+        date_reordo = request.POST.getlist('date_reordo')
+        message = request.POST.getlist('message')
+        order_stat = request.POST.getlist('order_stat')
+        customer_order = request.POST.getlist('customer_order')
+        date_end_real = request.POST.getlist('date_end_real')
+        AllocatedTime = request.POST.getlist('AllocatedTime')
+        Leadtime = request.POST.getlist('Leadtime')
+        workstation = request.POST.getlist('workstation')
+        Allocated_Time_On_Workstation = request.POST.getlist('Allocated_Time_On_Workstation')
+        Smooth_Family = request.POST.getlist('Smooth_Family')
+        Ranking = request.POST.getlist('Ranking')
+        Freeze_end_date = request.POST.getlist('Freeze end date')
+        Remain_to_do = request.POST.getlist('Remain to do')
+        
+        
+        
+        print('*'*50,date_start_plan[1])
+        # print(date_start_plan)
+        # print(type(date_start_plan[1]))
+        # print(date_start_plan= datetime. strptime( date_start_plan[1], '%Y/%m/%d'))
+        print( datetime. strptime( date_start_plan[1], '%d/%m/%Y'))
+        
+        
+        # print(type(id))
+        # print(type(id[0]))
+        # print(type([int(x) for x in id]))
+        
+        
+        # print(division)
+        # print('*'*70)
+        # print(profit_centre)
+        # print(order)
+        # print(material)
+        # print(Ranking)
+        # print(Freeze_end_date)
+        #print('*'*50)
+        #lenghtId=len(id)
+        #print(id)
+        #i=1
+        #while i <= 5:
+        
+        for i in range(len(id)):
+            if date_start_plan[i] != '':
+                date_start_plan [i]= datetime.strptime( date_start_plan[i],'%d/%m/%Y')
+            if date_end_plan[i] != '' :
+                date_end_plan [i]=datetime.strptime( date_end_plan[i],'%d/%m/%Y')
+            if date_reordo[i] != '':
+                print(date_reordo)
+                date_reordo [i]= datetime.strptime( date_reordo[i],'%d/%m/%Y')
+            if date_end_real[i] != '':    
+                date_end_real [i]=datetime.strptime(date_end_real[i],'%d/%m/%Y')
+            if Freeze_end_date[i] != '':
+                Freeze_end_date [i]= datetime.strptime(Freeze_end_date[i],'%d/%m/%Y') 
+                    
+            data =Shopfloor(plant=division[i],profit_centre=profit_centre[i],order=order[i],material=material[i],
+                            designation=designation[i],order_type=order_type[i],order_quantity=order_quantity[i],
+                            date_start_plan= date_start_plan[i],date_end_plan = date_end_plan[i],
+                            fixation=fixation[i],date_reordo=date_reordo [i] ,message=message[i],order_stat=order_stat[i],
+                            customer_order=customer_order[i],date_end_real= date_end_real[i],AllocatedTime=AllocatedTime[i],
+                            Leadtime=Leadtime[i],workstation=workstation[i],Allocated_Time_On_Workstation=Allocated_Time_On_Workstation[i],
+                            Smooth_Family=Smooth_Family[i],Ranking=Ranking[i],Freeze_end_date=Freeze_end_date[i],Remain_to_do=Remain_to_do[i])
+            print(data)
+            # data.save()
+        #i = i + 1
+        
+        #data= Shopfloor(7,'a','a','a','a','a',7,'2022-05-24 00:18:50.947946+02','2022-05-24 00:18:50.947946+02','a','2022-05-24 00:18:50.947946+02',12,'a','a','2022-05-24 00:18:50.947946+02',12,12,'a',7,'a','a','2022-05-24 00:18:50.947946+02',12)
+        #data= Shopfloor.objects.filter(id=1)
+        # print(data)
+        #data.save()
+        
+    return redirect("../")       
+        
+        
+        
+    
