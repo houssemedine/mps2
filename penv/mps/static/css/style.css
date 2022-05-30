@@ -16,6 +16,12 @@
       text-decoration: none;
   }
 
+  input[readonly].classname{
+    background-color:transparent;
+    border: 0px;
+
+    box-shadow: none;
+  }
   /* .btn-outline-primary {
     color: #537895;
     border-color: #537895;

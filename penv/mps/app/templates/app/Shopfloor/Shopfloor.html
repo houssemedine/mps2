@@ -12,13 +12,13 @@
                       <div class="card-header">
                         <h5 class="m-0">Planning</h5>
                       </div>
-                      <div class="card-body table-responsive p-0  " >
+                      <div class="card-body table-responsive p-0 " style="height: 400px;">
                       <div class="card-body">
                         <form method="POST" action="{%url 'createshopfloor' %}">
                             <!-- Security token -->
                             {% csrf_token %}
                         					
-                         <table class="table table-bordered text-nowrap">
+                         <table id="dataTable" class="table table-bordered table-head-fixed text-nowrap">
                             <thead >
                                 <tr>
                                     <th>id</th>
@@ -58,30 +58,30 @@
                                 
                                     <!--coois-->
                                     <!-- <td>{{data.id}}</td> -->
-                                    <td><input id="index" name="index" type="number" class="form-control"  value={{data.id}}></td> 
-                                    <td><input id="division " name="division" type="number" class="form-control"  value="{{ data.division }}"></td> 
-                                    <td><input id="profit_centre" name="profit_centre" type="text" class="form-control"  value="{{ data.profit_centre}}"  ></td>
-                                    <td><input id="order" name="order" type="text" class="form-control"  value="{{data.order}}"  ></td>   
-                                    <td><input id="material" name="material" type="text" class="form-control"  value="{{data.material}}"  ></td>
-                                    <td><input id="designation" name="designation" type="text" class="form-control"  value="{{ data.designation}}"  ></td>
-                                    <td><input id="order_type" name="order_type" type="text" class="form-control"  value="{{ data.order_type}}"  ></td>
-                                    <td><input id="order_quantity" name="order_quantity" type="text" class="form-control"  value="{{ data.order_quantity}}"  ></td>
-                                    <td><input id="date_start_plan" name="date_start_plan" type="text" class="form-control"  value="{{ data.date_start_plan | date:'d/m/Y'}}"  ></td>
-                                    <td><input id="date_end_plan" name="date_end_plan" type="text" class="form-control"  value="{{ data.date_end_plan | date:'d/m/Y'}}"  ></td>
-                                    <td><input id="fixation" name="fixation" type="text" class="form-control"  value="{{ data.fixation}}"  ></td>
+                                    <td><input id="index" name="index" type="number" class="form-control"  value={{data.id}} readonly="readonly"> </td> 
+                                    <td><input id="division" name="division" type="text" class="form-control"  value="{{ data.division }}" readonly="readonly"></td> 
+                                    <td><input id="profit_centre" name="profit_centre" type="text" class="form-control"  value="{{ data.profit_centre}}"readonly="readonly"  ></td>
+                                    <td><input id="order" name="order" type="text" class="form-control"  value="{{data.order}}" readonly="readonly" ></td>   
+                                    <td><input id="material" name="material" type="text" class="form-control"  value="{{data.material}}"readonly="readonly"  ></td>
+                                    <td><input id="designation" name="designation" type="text" class="form-control"  value="{{ data.designation}}"readonly="readonly" readonly="readonly"></td>
+                                    <td><input id="order_type" name="order_type" type="text" class="form-control"  value="{{ data.order_type}}" readonly="readonly" ></td>
+                                    <td><input id="order_quantity" name="order_quantity" type="text" class="form-control"  value="{{ data.order_quantity}}" readonly="readonly"  ></td>
+                                    <td><input id="date_start_plan" name="date_start_plan" type="text" class="form-control"  value="{{ data.date_start_plan | date:'d/m/Y'}}" readonly="readonly"></td>
+                                    <td><input id="date_end_plan" name="date_end_plan" type="text" class="form-control"  value="{{ data.date_end_plan | date:'d/m/Y'}}" readonly="readonly"></td>
+                                    <td><input id="fixation" name="fixation" type="text" class="form-control"  value="{{ data.fixation}}" readonly="readonly"  ></td>
                                     <!--zpp-->
-                                    <td><input id="date_reordo" name="date_reordo" type="text" class="form-control"  value="{{ data.date_reordo | date:'d/m/Y'}}"  ></td>
-                                    <td><input id="message" name="message" type="text" class="form-control"  value="{{ data.message}}"  ></td>
+                                    <td><input id="date_reordo" name="date_reordo" type="text" class="form-control"  value="{{ data.date_reordo | date:'d/m/Y'}}" readonly="readonly"  ></td>
+                                    <td><input id="message" name="message" type="text" class="form-control"  value="{{ data.message}}" readonly="readonly"  ></td>
                                     <!--coois-->
-                                    <td><input id="order_stat" name="order_stat" type="text" class="form-control"  value="{{ data.order_stat }}"  ></td>
-                                    <td><input id="customer_order" name="customer_order" type="text" class="form-control"  value="{{ data.customer_order}}"  ></td>
-                                    <td><input id="date_end_real" name="date_end_real" type="text" class="form-control"  value="{{data.date_end_real | date:'d/m/Y'}}"  ></td>
+                                    <td><input id="order_stat" name="order_stat" type="text" class="form-control"  value="{{ data.order_stat }}" readonly="readonly"  ></td>
+                                    <td><input id="customer_order" name="customer_order" type="text" class="form-control"  value="{{ data.customer_order}}" readonly="readonly"  ></td>
+                                    <td><input id="date_end_real" name="date_end_real" type="text" class="form-control"  value="{{data.date_end_real | date:'d/m/Y'}}" readonly="readonly"  ></td>
                                     <!--material-->
-                                    <td><input id="AllocatedTime" name="AllocatedTime" type="text" class="form-control"  value="{{ data.AllocatedTime}}"  ></td>
-                                    <td><input id="Leadtime" name="Leadtime" type="text" class="form-control"  value="{{data.Leadtime}}"  ></td>
-                                    <td><input id="workstation" name="workstation" type="text" class="form-control"  value="{{data.workstation}}"  ></td>
-                                    <td><input id="Allocated_Time_On_Workstation" name="Allocated_Time_On_Workstation" type="text" class="form-control"  value="{{ data.Allocated_Time_On_Workstation}}"  ></td>
-                                    <td><input id="Smooth_Family" name="Smooth_Family" type="text" class="form-control"  value="{{ data.Smooth_Family}}"  ></td>
+                                    <td><input id="AllocatedTime" name="AllocatedTime" type="text" class="form-control"  value="{{ data.AllocatedTime}}" readonly="readonly"  ></td>
+                                    <td><input id="Leadtime" name="Leadtime" type="text" class="form-control"  value="{{data.Leadtime}}" readonly="readonly"  ></td>
+                                    <td><input id="workstation" name="workstation" type="text" class="form-control"  value="{{data.workstation}}" readonly="readonly"  ></td>
+                                    <td><input id="Allocated_Time_On_Workstation" name="Allocated_Time_On_Workstation" type="text" class="form-control"  value="{{ data.Allocated_Time_On_Workstation}}" readonly="readonly"  ></td>
+                                    <td><input id="Smooth_Family" name="Smooth_Family" type="text" class="form-control"  value="{{ data.Smooth_Family}}" readonly="readonly" ></td>
                                     <td><input id="Ranking" name="Ranking" type="text" class="form-control" ></td>
                                     <td><input id="Freeze end date" name="Freeze end date" type="text" class="form-control"  ></td>
                                     <td><input id="Remain to do" name="Remain to do" type="text" class="form-control"  ></td>
@@ -94,19 +94,45 @@
                                 
                          </table>
 
-                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                            <input type="submit" class="btn btn:hover btn-color" value="Save">
+                            <input type="submit" class="btn btn:hover btn-color" value="Save" style="float: right;">
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" style="float: right;">
                         
                          </form>
-                        
                       </div>
+                      
                     </div>
-                </div>
-                 
+                </div>    
         </div>
     </div>
 
 </div>
 </div>
 
+
+<script>
+    var placeholder = document.getElementById('dataTable');
+var myDataGrid = new Handsontable(placeholder, {
+    records: records,
+    
+});
+
+
+    var placeholder = document.getElementById('dataTable');
+
+var myDataGrid =new Handsontable(placeholder, {
+    columns: [
+      {readOnly:false},
+      {},
+      {}
+    ],
+    cells:function(row, col, prop) {
+      var cellProperties = {};
+      if (row === 0 && col === 0) {
+        cellProperties.readOnly =true;
+      }
+      return cellProperties;
+    }
+});
+
+</script>
 {% endblock %}

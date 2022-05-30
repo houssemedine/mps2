@@ -991,8 +991,12 @@ def shopfloor(request):
     
     records=df_coois
     
+    
     return render(request,'app/Shopfloor/Shopfloor.html',{'records': records} )    
 
+def data_table(request):
+    return render(request,'app/Shopfloor/datatable.html')    
+     
 
 #create shopfloor
 def create_shopfloor(request):
@@ -1022,63 +1026,40 @@ def create_shopfloor(request):
         Ranking = request.POST.getlist('Ranking')
         Freeze_end_date = request.POST.getlist('Freeze end date')
         Remain_to_do = request.POST.getlist('Remain to do')
-        
-        
-        
-        print('*'*50,date_start_plan[1])
-        # print(date_start_plan)
-        # print(type(date_start_plan[1]))
-        # print(date_start_plan= datetime. strptime( date_start_plan[1], '%Y/%m/%d'))
-        print( datetime. strptime( date_start_plan[1], '%d/%m/%Y'))
-        
-        
-        # print(type(id))
-        # print(type(id[0]))
-        # print(type([int(x) for x in id]))
-        
-        
-        # print(division)
-        # print('*'*70)
-        # print(profit_centre)
-        # print(order)
-        # print(material)
-        # print(Ranking)
-        # print(Freeze_end_date)
-        #print('*'*50)
-        #lenghtId=len(id)
-        #print(id)
-        #i=1
-        #while i <= 5:
-        
+        #save all informations from table 
         for i in range(len(id)):
             if date_start_plan[i] != '':
+                #convert date_start_plan to datetime 
                 date_start_plan [i]= datetime.strptime( date_start_plan[i],'%d/%m/%Y')
+            else:
+                date_start_plan [i]=None
             if date_end_plan[i] != '' :
                 date_end_plan [i]=datetime.strptime( date_end_plan[i],'%d/%m/%Y')
+            else:
+                date_end_plan [i]=None
             if date_reordo[i] != '':
-                print(date_reordo)
                 date_reordo [i]= datetime.strptime( date_reordo[i],'%d/%m/%Y')
+            else:
+                date_reordo [i]=None
             if date_end_real[i] != '':    
                 date_end_real [i]=datetime.strptime(date_end_real[i],'%d/%m/%Y')
+            else:
+                date_end_real [i]=None
             if Freeze_end_date[i] != '':
-                Freeze_end_date [i]= datetime.strptime(Freeze_end_date[i],'%d/%m/%Y') 
-                    
-            data =Shopfloor(plant=division[i],profit_centre=profit_centre[i],order=order[i],material=material[i],
+                Freeze_end_date [i]= datetime.strptime(Freeze_end_date[i],'%d/%m/%Y')
+            else:
+                Freeze_end_date [i]=None
+            if Remain_to_do[i]=='':
+                Remain_to_do [i]=None
+            #save data        
+            data =Shopfloor(division=division[i],profit_centre=profit_centre[i],order=order[i],material=material[i],
                             designation=designation[i],order_type=order_type[i],order_quantity=order_quantity[i],
                             date_start_plan= date_start_plan[i],date_end_plan = date_end_plan[i],
                             fixation=fixation[i],date_reordo=date_reordo [i] ,message=message[i],order_stat=order_stat[i],
                             customer_order=customer_order[i],date_end_real= date_end_real[i],AllocatedTime=AllocatedTime[i],
                             Leadtime=Leadtime[i],workstation=workstation[i],Allocated_Time_On_Workstation=Allocated_Time_On_Workstation[i],
                             Smooth_Family=Smooth_Family[i],Ranking=Ranking[i],Freeze_end_date=Freeze_end_date[i],Remain_to_do=Remain_to_do[i])
-            print(data)
-            # data.save()
-        #i = i + 1
-        
-        #data= Shopfloor(7,'a','a','a','a','a',7,'2022-05-24 00:18:50.947946+02','2022-05-24 00:18:50.947946+02','a','2022-05-24 00:18:50.947946+02',12,'a','a','2022-05-24 00:18:50.947946+02',12,12,'a',7,'a','a','2022-05-24 00:18:50.947946+02',12)
-        #data= Shopfloor.objects.filter(id=1)
-        # print(data)
-        #data.save()
-        
+            data.save() 
     return redirect("../")       
         
         

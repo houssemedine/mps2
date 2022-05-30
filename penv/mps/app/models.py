@@ -203,7 +203,7 @@ class Zpp(BaseModel,SoftDeleteModel):
         return  str(self.element)      
 
 class Shopfloor(BaseModel,SoftDeleteModel):
-    plant=models.IntegerField(null=True)
+    division=models.IntegerField(null=True)
     profit_centre=models.CharField(max_length=50,null=True)
     order=models.CharField(max_length=50)
     material= models.CharField(max_length=50,null=True)
