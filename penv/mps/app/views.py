@@ -1046,11 +1046,18 @@ def create_shopfloor(request):
             else:
                 date_end_real [i]=None
             if Freeze_end_date[i] != '':
-                Freeze_end_date [i]= datetime.strptime(Freeze_end_date[i],'%d/%m/%Y')
+                Freeze_end_date [i]= datetime.strptime(Freeze_end_date[i],'%Y-%m-%d')
             else:
                 Freeze_end_date [i]=None
             if Remain_to_do[i]=='':
                 Remain_to_do [i]=None
+            
+            # if Freeze_end_date[0] !='':
+            #     pass
+            # else: 
+            #     #messages.error(request,"Please fill in  the first line of Freeze end date") 
+            #     print('Please fill in  the first line of Freeze end date')          
+               
             #save data        
             data =Shopfloor(division=division[i],profit_centre=profit_centre[i],order=order[i],material=material[i],
                             designation=designation[i],order_type=order_type[i],order_quantity=order_quantity[i],
@@ -1059,7 +1066,9 @@ def create_shopfloor(request):
                             customer_order=customer_order[i],date_end_real= date_end_real[i],AllocatedTime=AllocatedTime[i],
                             Leadtime=Leadtime[i],workstation=workstation[i],Allocated_Time_On_Workstation=Allocated_Time_On_Workstation[i],
                             Smooth_Family=Smooth_Family[i],Ranking=Ranking[i],Freeze_end_date=Freeze_end_date[i],Remain_to_do=Remain_to_do[i])
-            data.save() 
+            # messages.success(request,"Data saved successfully!") 
+            data.save()
+             
     return redirect("../")       
         
         

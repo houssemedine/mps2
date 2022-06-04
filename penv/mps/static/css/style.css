@@ -16,11 +16,10 @@
       text-decoration: none;
   }
 
-  input[readonly].classname{
-    background-color:transparent;
+  .input{
+    /* background-color:transparent; */
     border: 0px;
-
-    box-shadow: none;
+   
   }
   /* .btn-outline-primary {
     color: #537895;
