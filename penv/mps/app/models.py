@@ -127,9 +127,10 @@ class WorkData(BaseModel,SoftDeleteModel):
     Absenteeism_ratio= models.FloatField()
     Unproductiveness_ratio= models.FloatField()
     Efficienty_ratio=models.FloatField()
-    product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True)
+    cycle_time=models.FloatField()
     owner = models.CharField(default='officiel',max_length=30)
-   
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True)
+    
 
     # renames the instances of the WorkData 
     # with their startTime

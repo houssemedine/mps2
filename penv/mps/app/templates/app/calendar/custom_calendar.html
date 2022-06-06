@@ -159,35 +159,46 @@
              <div class="form-group row">
                 <label for="fte" class="col-sm-4 control-label">FTE hour by day</label>
                 <div class="col-sm-8">
-                <input id="fte" name="fte" type="number" class="form-control" required="" >
+                <input id="fte" name="fte" type="number" class="form-control" required="" step="0.01" >
                 </div>     
                  </div>
                   
                 <div class="form-group row">
                 <label for="extra-hours" class="col-sm-4 control-label">Extra hour</label>
                 <div class="col-sm-8">
-                <input id="extra-hours" name="extra-hours" type="number" class="form-control" required="" >
+                <input id="extra-hours" name="extra-hours" type="number" class="form-control" required="" step="0.01" >
                 </div>     
                 </div>  
                 
                 <div class="form-group row">
                 <label for="Absenteeism-ratio" class="col-sm-4 control-label">Absenteeism ratio</label>
                 <div class="col-sm-8">
-                <input id="Absenteeism-ratio" name="Absenteeism-ratio" type="number" class="form-control" required="">
+                <input id="Absenteeism-ratio" name="Absenteeism-ratio" type="number" class="form-control" required=""step="0.01">
                 </div>     
                 </div>  
                 
                 <div class="form-group row">
                 <label for="Unproductiveness-ratio" class="col-sm-4 control-label">Unproductiveness ratio</label>
                 <div class="col-sm-8">
-                <input id="Unproductiveness-ratio" name="Unproductiveness-ratio" type="number" class="form-control" required="" >
+                <input id="Unproductiveness-ratio" name="Unproductiveness-ratio" type="number" class="form-control" required="" step="0.01" >
                 </div>     
                 </div>  
                 
                 <div class="form-group row">
                     <label for="Efficienty-ratio" class="col-sm-4 control-label">Efficienty ratio</label>
                     <div class="col-sm-8">
-                    <input id="Efficienty-ratio" name="Efficienty-ratio" type="number" class="form-control" required="">
+                    <input id="Efficienty-ratio" name="Efficienty-ratio" type="number" class="form-control" required=""step="0.01">
+                    </div>     
+                </div> 
+
+                <div class="form-group row">
+                    <label for="cycle-time" class="col-sm-4 control-label">Cycle time</label>
+                    <div class="col-sm-8">
+                    <input id="cycle-time" name="cycle-time" type="number" class="form-control" required=""step="0.01" >
+                    <input type="radio" id="hour" name="cycle" value="Hours">
+                    <label for="hour">Hours</label>
+                    <input type="radio" id="day" name="cycle" value="Days">
+                    <label for="day">Days</label><br>
                     </div>     
                 </div> 
 
@@ -233,6 +244,7 @@ function editEvent(event) {
     $('#event-modal input[name="Absenteeism-ratio"]').val(event ? event.absenteeism_ratio : '');
     $('#event-modal input[name="Unproductiveness-ratio"]').val(event ? event.unproductiveness_ratio : '');
     $('#event-modal input[name="Efficienty-ratio"]').val(event ? event.efficienty_ratio : '');
+    $('#event-modal input[name="cycle-time"]').val(event ? event.cycle_time : '');
     $('#event-modal input[name="start-time"]').val(event ? event.StartTime : '');
     $('#event-modal input[name="end-time"]').val(event ? event.EndTime : '');
     $('#event-modal input[name="owner"]').val(event ? event.Owner : '');
@@ -260,7 +272,9 @@ function saveEvent() {
         absenteeism_ratio: $('#event-modal input[name="Absenteeism-ratio"]').val(),
         unproductiveness_ratio: $('#event-modal input[name="Unproductiveness-ratio"]').val(),
         efficienty_ratio: $('#event-modal input[name="Efficienty-ratio"]').val(),
+        cycle_time: $('#event-modal input[name="cycle-time"]').val(),
         Owner: $('#event-modal input[name="owner"]').val(),
+
         
 
     }
@@ -281,6 +295,8 @@ function saveEvent() {
                 dataSource[i].unproductiveness_ratio = event.unproductiveness_ratio;
                 dataSource[i].efficienty_ratio = event.efficienty_ratio;
                 dataSource[i].Owner = event.Owner;
+                dataSource[i].cycle_time = event.cycle_time;
+
 
             }
         }
@@ -380,6 +396,7 @@ $(function() {
                 efficienty_ratio:{{day.Efficienty_ratio}},
                 EndTime:"{{day.endTime|time:"H:i:s"}}",
                 StartTime:"{{day.startTime|time:"H:i:s"}}",
+                cycle_time:{{day.cycle_time}},
                 color:'#0d6efd',
                 
             },

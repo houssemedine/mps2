@@ -4,6 +4,7 @@ from app.forms import DivisionForm,MaterialForm,ProductForm,CalendarConfiguratio
 from datetime import  datetime, timedelta
 from io import StringIO
 import psycopg2, pandas as pd
+import numpy as np
 from django.contrib import messages
 
 
@@ -33,7 +34,6 @@ def read_division(request):
     return render(request, "app/division/home_division.html", {'data':data,'form':form})
 
 
-
 #update object(Division) by id
 def update_division(request):
     #get id
@@ -52,8 +52,6 @@ def update_division(request):
     return redirect("./")
 
 
-
-
 # delete object(Division) by id
 def delete_division(request, id):
     # fetch the object related to passed id
@@ -64,8 +62,6 @@ def delete_division(request, id):
     obj.soft_delete()
     return redirect("../")
     
-
-
 
 # restore object(Division) by id
 def restore_division(request, id):
@@ -79,7 +75,6 @@ def restore_division(request, id):
     
 
 #*********************CRUD Material************************
-
 
 # add new object(Material)
 def create_material(request,product):
@@ -166,7 +161,6 @@ def create_calendar(request,product):
     #get list of days from work data 
     #workDays = list(WorkData.objects.values_list('date',flat=True))
     #print(workDays)
-    print('******************************************************************')
     # get list of days from dataBase to compare if exist 
     days = list(HolidaysCalendar.objects.values_list('holidaysDate',flat=True))
     print(days)
@@ -263,7 +257,7 @@ def duplicate_calendar(request, product):
     #save data for loop work
     work = WorkData.undeleted_objects.all().filter(product_id = product)
     for data in work:
-        custom_work_data = WorkData(date=data.date,startTime=data.startTime,endTime=data.endTime,FTEhourByDay=data.FTEhourByDay,ExtraHour=data.ExtraHour,Absenteeism_ratio=data.Absenteeism_ratio,Unproductiveness_ratio=data.Unproductiveness_ratio,Efficienty_ratio=data.Efficienty_ratio,product_id =data.product_id,owner = 'marwa')
+        custom_work_data = WorkData(date=data.date,startTime=data.startTime,endTime=data.endTime,FTEhourByDay=data.FTEhourByDay,ExtraHour=data.ExtraHour,Absenteeism_ratio=data.Absenteeism_ratio,Unproductiveness_ratio=data.Unproductiveness_ratio,Efficienty_ratio=data.Efficienty_ratio,cycle_time=data.cycle_time,product_id =data.product_id,owner = 'marwa')
         custom_work_data.save()  
     #custom_holidays = HolidayCalendar.undeleted_objects.all().filter(product_id = product,owner = 'marwa')
     #call function create new holiday object
@@ -443,8 +437,17 @@ def work_data(request,product):
         AbsenteeismRatio = request.POST.get('Absenteeism-ratio')
         UnproductivenessRatio = request.POST.get('Unproductiveness-ratio')
         EfficientyRatio = request.POST.get('Efficienty-ratio')
+        cycle_time = request.POST.get('cycle-time')
+        time = request.POST.get('cycle')
         startDate = request.POST.get('event-start-date')
         endDate = request.POST.get('event-end-date')
+        print('*************')
+        print(time)
+        print(cycle_time)
+        if time == 'Days':
+            cycle_time = 24 * float(cycle_time)
+            print(cycle_time)
+        
 
         # If id exist Update Object if not create new one
         if id:
@@ -461,6 +464,7 @@ def work_data(request,product):
                 work_day.Absenteeism_ratio=AbsenteeismRatio
                 work_day.Unproductiveness_ratio=UnproductivenessRatio
                 work_day.Efficienty_ratio=EfficientyRatio
+                work_day.cycle_time=cycle_time
                 work_day.startTime=startTime
                 work_day.endTime=endTime
                 work_day.save()
@@ -475,13 +479,13 @@ def work_data(request,product):
                 if (startDate.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days] ) and (int(product) in products):
                     exist_day =WorkData.undeleted_objects.all().filter(date = startDate) 
                     exist_day.delete()
-                    data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product)
+                    data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,cycle_time=cycle_time,product_id =product)
                     data.save()
                     return redirect("../calendar")
                 else:
                     exist_off_days = HolidaysCalendar.undeleted_objects.all().filter(holidaysDate= startDate) 
                     exist_off_days.delete()
-                    data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product)
+                    data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,cycle_time=cycle_time,product_id =product)
                     data.save()
                     return redirect("../calendar")
             # add list of days in database       
@@ -496,7 +500,7 @@ def work_data(request,product):
                     if (day.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days]) and (int(product) in products):
                         exist_days = WorkData.undeleted_objects.all().filter(date = day) 
                         exist_days.delete()
-                        data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product)
+                        data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,cycle_time=cycle_time,product_id =product)
                         data.save()     
                     else :
                         #replace holidays with work data
@@ -505,13 +509,12 @@ def work_data(request,product):
                         #delete exist_off_days
                         exist_off_days.delete()
                         #save work data
-                        data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product)
+                        data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,cycle_time=cycle_time,product_id =product)
                         data.save()
                 return redirect("../calendar")       
         
     return render(request,"app/calendar/calendar.html",{'product':product, 'work':work})
-
-           
+      
 
 #********************custom work data****************************
 
@@ -534,8 +537,16 @@ def custom_work(request,product):
         AbsenteeismRatio = request.POST.get('Absenteeism-ratio')
         UnproductivenessRatio = request.POST.get('Unproductiveness-ratio')
         EfficientyRatio = request.POST.get('Efficienty-ratio')
+        cycle_time = request.POST.get('cycle-time')
+        time = request.POST.get('cycle')
         startDate = request.POST.get('event-start-date')
         endDate = request.POST.get('event-end-date')
+        print('*************')
+        print(time)
+        print(cycle_time)
+        if time == 'Days':
+            cycle_time = 24 * float(cycle_time)
+            print(cycle_time)
         # If id exist Update Object if not create new one
         if id:
             #get object work data
@@ -551,8 +562,9 @@ def custom_work(request,product):
                 work_day.Absenteeism_ratio=AbsenteeismRatio
                 work_day.Unproductiveness_ratio=UnproductivenessRatio
                 work_day.Efficienty_ratio=EfficientyRatio
-                #work_day.startTime=startTime
-                #work_day.endTime=endTime
+                work_day.cycle_time=cycle_time
+                work_day.startTime=startTime
+                work_day.endTime=endTime
                 
                 #To complete all filed
                 work_day.save()
@@ -567,7 +579,7 @@ def custom_work(request,product):
                 if (startDate.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days] ) and (int(product) in products):
                     exist_day =WorkData.undeleted_objects.all().filter(date = startDate, owner = 'marwa') 
                     exist_day.delete()
-                    data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product,owner = owner)
+                    data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,cycle_time=cycle_time,product_id =product,owner = owner)
                     data.save()
                     return redirect("../customcalendar")
                 else:
@@ -576,7 +588,7 @@ def custom_work(request,product):
                     #delete holidays
                     exist_off_days.delete()
                     #save data work object
-                    data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product,owner = owner)
+                    data = WorkData(date=startDate,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,cycle_time=cycle_time,product_id =product,owner = owner)
                     data.save()
                     return redirect("../customcalendar")
             # add list of days in database       
@@ -593,7 +605,7 @@ def custom_work(request,product):
                     if (day.strftime('%Y-%m-%d') in [day.strftime('%Y-%m-%d') for day in days]) and (int(product) in products):
                         exist_days = WorkData.undeleted_objects.all().filter(date = day, owner = 'marwa') 
                         exist_days.delete()
-                        data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product,owner = owner)
+                        data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,cycle_time=cycle_time,product_id =product,owner = owner)
                         data.save()
                     else :
                         #replace holidays with work data
@@ -602,7 +614,7 @@ def custom_work(request,product):
                         #delete exist_off_days
                         exist_off_days.delete()
                         #save work data
-                        data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,product_id =product,owner = owner)
+                        data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,cycle_time=cycle_time,product_id =product,owner = owner)
                         data.save()
                 return redirect("../customcalendar")
     return render(request,"app/calendar/custom_calendar.html",{'product':product, 'work':work}) 
@@ -758,7 +770,7 @@ def copy_calendar(request,product):
     work_data = WorkData.undeleted_objects.all().filter(product_id = product_copied ,owner = 'officiel')
     #save workdata object in DB
     for data in work_data:
-        work_data = WorkData(date=data.date,startTime=data.startTime,endTime=data.endTime,FTEhourByDay=data.FTEhourByDay,ExtraHour=data.ExtraHour,Absenteeism_ratio=data.Absenteeism_ratio,Unproductiveness_ratio=data.Unproductiveness_ratio,Efficienty_ratio=data.Efficienty_ratio,product_id = product)
+        work_data = WorkData(date=data.date,startTime=data.startTime,endTime=data.endTime,FTEhourByDay=data.FTEhourByDay,ExtraHour=data.ExtraHour,Absenteeism_ratio=data.Absenteeism_ratio,Unproductiveness_ratio=data.Unproductiveness_ratio,Efficienty_ratio=data.Efficienty_ratio,cycle_time=data.cycle_time,product_id = product)
         work_data.save() 
     return redirect("../calendar")
 
@@ -1026,49 +1038,66 @@ def create_shopfloor(request):
         Ranking = request.POST.getlist('Ranking')
         Freeze_end_date = request.POST.getlist('Freeze end date')
         Remain_to_do = request.POST.getlist('Remain to do')
-        #save all informations from table 
-        for i in range(len(id)):
-            if date_start_plan[i] != '':
-                #convert date_start_plan to datetime 
-                date_start_plan [i]= datetime.strptime( date_start_plan[i],'%d/%m/%Y')
-            else:
-                date_start_plan [i]=None
-            if date_end_plan[i] != '' :
-                date_end_plan [i]=datetime.strptime( date_end_plan[i],'%d/%m/%Y')
-            else:
-                date_end_plan [i]=None
-            if date_reordo[i] != '':
-                date_reordo [i]= datetime.strptime( date_reordo[i],'%d/%m/%Y')
-            else:
-                date_reordo [i]=None
-            if date_end_real[i] != '':    
-                date_end_real [i]=datetime.strptime(date_end_real[i],'%d/%m/%Y')
-            else:
-                date_end_real [i]=None
-            if Freeze_end_date[i] != '':
-                Freeze_end_date [i]= datetime.strptime(Freeze_end_date[i],'%Y-%m-%d')
-            else:
-                Freeze_end_date [i]=None
-            if Remain_to_do[i]=='':
-                Remain_to_do [i]=None
+        print('*************',len(Freeze_end_date[0]))
+        # if  len(Freeze_end_date[0]) > 0:
+        data=Shopfloor.objects.all().delete()
+        
+        if  Freeze_end_date[0]!= '':     
             
-            # if Freeze_end_date[0] !='':
-            #     pass
-            # else: 
-            #     #messages.error(request,"Please fill in  the first line of Freeze end date") 
-            #     print('Please fill in  the first line of Freeze end date')          
-               
-            #save data        
-            data =Shopfloor(division=division[i],profit_centre=profit_centre[i],order=order[i],material=material[i],
-                            designation=designation[i],order_type=order_type[i],order_quantity=order_quantity[i],
-                            date_start_plan= date_start_plan[i],date_end_plan = date_end_plan[i],
-                            fixation=fixation[i],date_reordo=date_reordo [i] ,message=message[i],order_stat=order_stat[i],
-                            customer_order=customer_order[i],date_end_real= date_end_real[i],AllocatedTime=AllocatedTime[i],
-                            Leadtime=Leadtime[i],workstation=workstation[i],Allocated_Time_On_Workstation=Allocated_Time_On_Workstation[i],
-                            Smooth_Family=Smooth_Family[i],Ranking=Ranking[i],Freeze_end_date=Freeze_end_date[i],Remain_to_do=Remain_to_do[i])
-            # messages.success(request,"Data saved successfully!") 
-            data.save()
-             
+              #save all informations from table 
+            for i in range(len(id)):
+                if date_start_plan[i] != '':
+                    #convert date_start_plan to datetime 
+                    date_start_plan [i]= datetime.strptime( date_start_plan[i],'%d/%m/%Y')
+                else:
+                    date_start_plan [i]=None
+                if date_end_plan[i] != '' :
+                    date_end_plan [i]=datetime.strptime( date_end_plan[i],'%d/%m/%Y')
+                else:
+                    date_end_plan [i]=None
+                if date_reordo[i] != '':
+                    date_reordo [i]= datetime.strptime( date_reordo[i],'%d/%m/%Y')
+                else:
+                    date_reordo [i]=None
+                if date_end_real[i] != '':    
+                    date_end_real [i]=datetime.strptime(date_end_real[i],'%d/%m/%Y')
+                else:
+                    date_end_real [i]=None
+                if Freeze_end_date[i] != '':
+                    Freeze_end_date [i]= datetime.strptime(Freeze_end_date[i],'%Y-%m-%d')
+                else:
+                    Freeze_end_date [i]=None
+                    
+                if Remain_to_do[i]=='':
+                    Remain_to_do [i]=None
+                
+            
+
+        
+                data =Shopfloor(division=division[i],profit_centre=profit_centre[i],order=order[i],material=material[i],
+                                designation=designation[i],order_type=order_type[i],order_quantity=order_quantity[i],
+                                date_start_plan= date_start_plan[i],date_end_plan = date_end_plan[i],
+                                fixation=fixation[i],date_reordo=date_reordo [i] ,message=message[i],order_stat=order_stat[i],
+                                customer_order=customer_order[i],date_end_real= date_end_real[i],AllocatedTime=AllocatedTime[i],
+                                Leadtime=Leadtime[i],workstation=workstation[i],Allocated_Time_On_Workstation=Allocated_Time_On_Workstation[i],
+                                Smooth_Family=Smooth_Family[i],Ranking=Ranking[i],Freeze_end_date=Freeze_end_date[i],Remain_to_do=Remain_to_do[i])
+                
+                # try:
+                #         if Freeze_end_date[0] != None:
+                #             data.save()
+                #             messages.success(request,"data saved successfully!") 
+                # except Exception:
+                #     messages.error(request,"fill in the first box of Freeze end date please!")               
+                data.save()
+            data=Shopfloor.objects.all().values()
+            df_data=pd.DataFrame(list(data))
+            df_data.to_csv('df_shopfloor.csv')
+            messages.success(request,"Data saved successfully!") 
+        else:
+             messages.error(request,"Fill in the first box of Freeze end date please!")  
+        
+                   
+                
     return redirect("../")       
         
         
