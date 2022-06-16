@@ -14,7 +14,7 @@
         {% endif %}
         <!--return back-->
         <div style='margin-bottom:10px'>
-            <a href="{%url 'product' product %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>
+            <a href="{%url 'product' division  %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>
             </div>
     
         <div class="row">
@@ -97,12 +97,11 @@
 </div>
 
 
-
 <!--create Material modal-->
 <div class="modal" id="create">
     <div class="modal-dialog">
     <div class="modal-content">
-        <form method="POST" action="{% url 'creatematerial' product %}">
+        <form method="POST" action="{% url  'creatematerial' division product  %}">
         <!-- Security token -->
         {% csrf_token %}
        <div class="modal-header">						
@@ -126,7 +125,7 @@
 <div class="modal" id="update" >
     <div class="modal-dialog">
     <div class="modal-content">
-        <form method="POST" action ="{%url 'updatematerial'%}"> 
+        <form method="POST" action ="{%url 'updatematerial' division %}"> 
             <!-- Security token by Django -->
             {% csrf_token %}
         <div class="modal-header">						
@@ -191,9 +190,10 @@
 <script>
     $('#delete').on('show.bs.modal', function (event) {
     var id = $(event.relatedTarget).data('id');
+    var division = {{division}};
     var material = $(event.relatedTarget).data('material');
     $(this).find(".modal-body").text('Are you sure you want to delete these Material: '+ material +'?');
-    document.getElementById("targetlink").href="/app/product/"+id+"/deletematerial";
+    document.getElementById("targetlink").href="/app/division/"+division+"/product/"+id+"/deletematerial";
 
     });
 </script>
@@ -202,9 +202,10 @@
 <script>
     $('#restore').on('show.bs.modal', function (event) {
     var id = $(event.relatedTarget).data('id');
+    var division = {{division}};
     var material = $(event.relatedTarget).data('material');
     $(this).find(".modal-body").text('Are you sure you want to restore these Material: '+material +'?');
-    document.getElementById("link").href="/app/product/"+id+"/restoremateriale";
+    document.getElementById("link").href="/app/division/"+division+"/product/"+id+"/restoremateriale";
     });
 </script>
 

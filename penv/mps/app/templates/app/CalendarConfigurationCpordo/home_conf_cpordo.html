@@ -14,7 +14,7 @@
         {% endif %}
         <!--return back-->
         <div style='margin-bottom:10px'>
-            <a href="{%url 'product' product %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>
+            <a href="{%url 'product' division  %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>
             </div>
         <div class="row">
             <div class="col-12">
@@ -86,7 +86,7 @@
 <div class="modal" id="create">
     <div class="modal-dialog">
     <div class="modal-content">
-        <form method="POST" action="{% url 'createconfigCpordo' product %}">
+        <form method="POST" action="{% url 'createconfigCpordo' division product %}">
         <!-- Security token -->
         {% csrf_token %}
        <div class="modal-header">						
@@ -110,7 +110,7 @@
 <div class="modal" id="update" >
     <div class="modal-dialog">
     <div class="modal-content">
-        <form method="POST" action ="{%url 'updateconfigCpordo' %}"> 
+        <form method="POST" action ="{%url 'updateconfigCpordo' division %}"> 
             <!-- Security token by Django -->
             {% csrf_token %}
         <div class="modal-header">						
@@ -174,9 +174,10 @@
 <script>
     $('#delete').on('show.bs.modal', function (event) {
     var id = $(event.relatedTarget).data('id');
+    var division = {{division}};
     var msn = $(event.relatedTarget).data('msn');
     $(this).find(".modal-body").text('Are you sure you want to delete these Calendar Configuration CpOrdo: '+ msn +'?');
-    document.getElementById("targetlink").href="/app/product/"+id+"/deleteconfigCpordo";
+    document.getElementById("targetlink").href="/app/division/"+division+"/product/"+id+"/deleteconfigCpordo";
 
     });
 </script>
@@ -185,9 +186,10 @@
 <script>
     $('#restore').on('show.bs.modal', function (event) {
     var id = $(event.relatedTarget).data('id');
+    var division = {{division}};
     var msn = $(event.relatedTarget).data('msn');
     $(this).find(".modal-body").text('Are you sure you want to restore these Calendar Configuration CpOrdo: '+msn +'?');
-    document.getElementById("link").href="/app/product/"+id+"/restoreconfigCpordo";
+    document.getElementById("link").href="/app/division/"+division+"/product/"+id+"/restoreconfigCpordo";
     });
 </script>
 

@@ -67,8 +67,7 @@ class Division(BaseModel ,SoftDeleteModel) :
     # renames the instances of the Division
     # with their name
      def __str__(self):
-        return self.name
-
+        return str(self.id) 
 
 #Product Model
 class Product(BaseModel,SoftDeleteModel):
@@ -224,10 +223,9 @@ class Shopfloor(BaseModel,SoftDeleteModel):
     workstation= models.CharField(max_length=200)
     Allocated_Time_On_Workstation =models.FloatField()
     Smooth_Family=models.CharField(max_length=50)
-    Ranking=models.CharField(max_length=50,null=True)
-    Freeze_end_date=models.DateField(null=True)
+    Ranking=models.DateField()
+    Freeze_end_date=models.DateTimeField(null=True)
     Remain_to_do=models.FloatField(null=True)
-    
     # renames the instances of the Shopfloor
     # with their order
     # def __str__(self):

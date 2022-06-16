@@ -77,7 +77,7 @@ def restore_division(request, id):
 #*********************CRUD Material************************
 
 # add new object(Material)
-def create_material(request,product):
+def create_material(request,division,product):
     form = MaterialForm(request.POST)
     if request.method == "POST":
         if form.is_valid():
@@ -98,7 +98,7 @@ def read_material(request):
 
 
 #update object(Material) by id
-def update_material(request):
+def update_material(request,division):
     #get id
     id = id = request.POST.get('id')
     # fetch the object related to passed id
@@ -115,7 +115,7 @@ def update_material(request):
     
 
 # delete object (Material) by id
-def delete_material(request, id):
+def delete_material(request, division ,id):
     # fetch the object related to passed id
     obj = get_object_or_404(Material, id = id)
     #alert message
@@ -126,7 +126,7 @@ def delete_material(request, id):
    
 
 # restore object(Material) by id
-def restore_material(request, id):
+def restore_material(request, division ,id):
     # fetch the object related to passed id
     obj = get_object_or_404(Material, id = id)
     #alert message
@@ -137,27 +137,27 @@ def restore_material(request, id):
 
 
 # find all Material for product 
-def material(request ,product):
+def material(request ,division, product):
     #get MaterialForm
     form = MaterialForm()
     # undeleted_objects object of soft delete manager
     data = Material.objects.filter(product__pk = product ).order_by('id')    
-    return render(request, "app/material/material.html", {'data':data,'product':product,'form':form})
+    return render(request, "app/material/material.html", {'data':data,'division':division,'product':product,'form':form})
 
 
 #********************Create Holidays calendar****************************
-def calendar(request,product):
+def calendar(request,division,product):
     # get all work data objects to display in Calendar(for copy calendar)
     products_data= Product.undeleted_objects.all()
     # get all work data objects to display in Calendar
     work = WorkData.undeleted_objects.all().filter(product_id = product, owner = 'officiel') 
     # get all holiday objects to display in Calendar
     holidays = HolidaysCalendar.undeleted_objects.all().filter(product_id = product, owner = 'officiel' ) 
-    return render(request, "app/calendar/calendar.html",{'product':product,'holidays':holidays,'work':work,'products_data':products_data})
+    return render(request, "app/calendar/calendar.html",{'product':product,'division':division,'holidays':holidays,'work':work,'products_data':products_data})
 
 
 # create calendar for product 
-def create_calendar(request,product):
+def create_calendar(request,division,product):
     #get list of days from work data 
     #workDays = list(WorkData.objects.values_list('date',flat=True))
     #print(workDays)
@@ -225,8 +225,8 @@ def create_calendar(request,product):
 
 
 # delete day (holiday or work)
-def delete_day(request,product):  # sourcery skip: avoid-builtin-shadow
-    holidays = HolidaysCalendar.undeleted_objects.all().filter(product_id = product)
+def delete_day(request,division,product): 
+    #holidays = HolidaysCalendar.undeleted_objects.all().filter(product_id = product)
     if request.method =="POST"  and 'delete' in request.POST:
         # get id value from form
         id = request.POST.get('date_id')
@@ -236,13 +236,13 @@ def delete_day(request,product):  # sourcery skip: avoid-builtin-shadow
         # delete object
         obj.soft_delete()
         # redirect to calendar 
-        return redirect("../calendar")
-    return render(request,"app/calendar/calendar.html",{'product':product,'holidays':holidays} )
+    return redirect("../calendar")
+    #return render(request,"app/calendar/calendar.html",{'product':product} )
     
 #********************Custom calendar****************************
 
 #duplicate calendar
-def duplicate_calendar(request, product):
+def duplicate_calendar(request,division,product):
     #Delete custom holidays
     custom_holidays = HolidaysCalendar.undeleted_objects.all().filter(product_id = product,owner = 'marwa')
     custom_holidays.delete()
@@ -261,22 +261,24 @@ def duplicate_calendar(request, product):
         custom_work_data.save()  
     #custom_holidays = HolidayCalendar.undeleted_objects.all().filter(product_id = product,owner = 'marwa')
     #call function create new holiday object
-    custom_calendar(request,product)
+    custom_calendar(request,division,product)
     #call function create new work data object 
-    custom_work(request,product)
+    custom_work(request,division,product)
     return redirect("../customcalendar")
     #return render(request,"app/calendar/custom_calendar.html", {'product':product,'holidays':custom_holidays})
 
-def custom_calendar(request,product):
+
+
+def custom_calendar(request,division,product):
     # get all holiday objects to display in Calendar
     holidays = HolidaysCalendar.undeleted_objects.all().filter(product_id = product ,owner = 'marwa') 
     # get all work data objects to display in Calendar    
     work = WorkData.undeleted_objects.all().filter(product_id = product ,owner = 'marwa')
-    return render(request,"app/calendar/custom_calendar.html",{'product':product,'holidays':holidays,'work':work})
+    return render(request,"app/calendar/custom_calendar.html",{'product':product,'division':division,'holidays':holidays,'work':work})
     
 
 #custom calendar
-def create_custom_calendar(request,product):
+def create_custom_calendar(request,division,product):
     # get list of days from dataBase to compare if exist 
     days = list(HolidaysCalendar.objects.values_list('holidaysDate',flat=True))
     # get list of product_id from database to compare if exist
@@ -342,8 +344,8 @@ def create_custom_calendar(request,product):
 
 
 # delete day (holiday or work) for custom
-def delete_day_custom(request,product):  # sourcery skip: avoid-builtin-shadow
-    holidays = HolidaysCalendar.undeleted_objects.all().filter(product_id = product)
+def delete_day_custom(request,division,product):  # sourcery skip: avoid-builtin-shadow
+    #holidays = HolidaysCalendar.undeleted_objects.all().filter(product_id = product)
     if request.method =="POST"  and 'delete-custom' in request.POST:
         # get id value from form
         id = request.POST.get('date_id')
@@ -353,8 +355,8 @@ def delete_day_custom(request,product):  # sourcery skip: avoid-builtin-shadow
         # delete object
         obj.soft_delete()
         # redirect to calendar 
-        return redirect("../customcalendar")
-    return render(request,"app/calendar/custom_calendar.html",{'product':product,'holidays':holidays} )
+    return redirect("../customcalendar")
+    #return render(request,"app/calendar/custom_calendar.html",{'product':product,'holidays':holidays} )
 
 #********************Crud Product****************************
 # add new object(product)
@@ -420,7 +422,7 @@ def product(request ,division):
 
 #********************work Data****************************
 #create work data for calendar
-def work_data(request,product):
+def work_data(request,division,product):
     work = WorkData.undeleted_objects.all().filter(product_id = product) 
     # get list of days from dataBase to compare if exist 
     days = list(work.values_list('date',flat=True))
@@ -513,13 +515,13 @@ def work_data(request,product):
                         data.save()
                 return redirect("../calendar")       
         
-    return render(request,"app/calendar/calendar.html",{'product':product, 'work':work})
+    return render(request,"app/calendar/calendar.html",{'product':product,'division':division, 'work':work})
       
 
 #********************custom work data****************************
 
 #create work data for custom calendar
-def custom_work(request,product):
+def custom_work(request,division,product):
     # get all work data objects to display in Calendar
     work = WorkData.undeleted_objects.all().filter(product_id = product ,owner = 'marwa') 
     # get list of days from dataBase to compare if exist 
@@ -617,12 +619,12 @@ def custom_work(request,product):
                         data = WorkData(date=day,startTime=startTime,endTime=endTime,FTEhourByDay=fte,ExtraHour=extraHours,Absenteeism_ratio=AbsenteeismRatio,Unproductiveness_ratio=UnproductivenessRatio, Efficienty_ratio=EfficientyRatio,cycle_time=cycle_time,product_id =product,owner = owner)
                         data.save()
                 return redirect("../customcalendar")
-    return render(request,"app/calendar/custom_calendar.html",{'product':product, 'work':work}) 
+    return render(request,"app/calendar/custom_calendar.html",{'product':product,'division':division, 'work':work}) 
 
 #********************** CRUD CalendarConfigurationTraitement****************************
 
 # add new object(CalendarConfigurationTraitement)
-def create_conf_trait(request,product):
+def create_conf_trait(request,division,product):
     form = CalendarConfigurationTreatementForm(request.POST)
     if request.method == "POST":
      if form.is_valid():
@@ -637,7 +639,7 @@ def create_conf_trait(request,product):
 
 
 #update object(CalendarConfigurationTraitement) by id
-def update_conf_trait(request):
+def update_conf_trait(request,division):
     #get id
     id = id = request.POST.get('id')
     # fetch the object related to passed id
@@ -649,12 +651,12 @@ def update_conf_trait(request):
             messages.success(request,"CalendarConfigurationTraitement updated successfully!")   
             form.save()
         else:
-         messages.error(request,"try again !")           
+          messages.error(request,"try again !")           
     return redirect(f'./{str(obj.product_id)}/configTrait')
     
 
 # delete object (CalendarConfigurationTraitement) by id
-def delete_conf_trait(request, id):
+def delete_conf_trait(request, division ,id):
     # fetch the object related to passed id
     obj = get_object_or_404(CalendarConfigurationTreatement, id = id)
     messages.success(request,"CalendarConfigurationTraitement deleted successfully!")   
@@ -665,7 +667,7 @@ def delete_conf_trait(request, id):
 
 
 # restore object (CalendarConfigurationTraitement) by id
-def restore_conf_trait(request, id):
+def restore_conf_trait(request, division ,id):
     # fetch the object related to passed id
     obj = get_object_or_404(CalendarConfigurationTreatement, id = id)
     messages.success(request,"CalendarConfigurationTraitement restored successfully!")   
@@ -675,18 +677,18 @@ def restore_conf_trait(request, id):
     
 
 # find all CalendarConfigurationTraitement for product 
-def config_trait(request ,product):
+def config_trait(request, division,product):
     #get CalendarConfigurationTraitementForm
     form = CalendarConfigurationTreatementForm()
     # undeleted_objects object of soft delete manager
     data = CalendarConfigurationTreatement.objects.filter(product__pk = product ).order_by('id')    
-    return render(request, "app/CalendarConfigurationTraitement/home_conf_traitement.html", {'data':data,'product':product,'form':form})
+    return render(request, "app/CalendarConfigurationTraitement/home_conf_traitement.html", {'data':data,'division':division,'product':product,'form':form})
 
 
 #********************** CRUD CalendarConfigurationCpOrdo****************************
 
 # add new object(CalendarConfigurationCpordo)
-def create_conf_cpordo(request,product):
+def create_conf_cpordo(request,division,product):
     form = CalendarConfigurationCpordoForm(request.POST)
     if request.method == "POST":
         if form.is_valid():
@@ -700,7 +702,7 @@ def create_conf_cpordo(request,product):
     
 
 #update object(CalendarConfigurationCpordo) by id
-def update_conf_cpordo(request):
+def update_conf_cpordo(request, division):
     #get id
     id = id = request.POST.get('id')
     # fetch the object related to passed id
@@ -717,7 +719,7 @@ def update_conf_cpordo(request):
     
 
 # delete object (CalendarConfigurationCpordo) by id
-def delete_conf_cpordo(request, id):
+def delete_conf_cpordo(request,division ,id):
     # fetch the object related to passed id
     obj = get_object_or_404(CalendarConfigurationCpordo, id = id)
     messages.success(request,"CalendarConfigurationCpordo deleted successfully!")
@@ -727,7 +729,7 @@ def delete_conf_cpordo(request, id):
 
 
 # restore object (CalendarConfigurationCpordo) by id
-def restore_conf_cpordo(request, id):
+def restore_conf_cpordo(request,division ,id):
     # fetch the object related to passed id
     obj = get_object_or_404(CalendarConfigurationCpordo, id = id)
     messages.success(request,"CalendarConfigurationCpordo restored successfully!")
@@ -737,12 +739,12 @@ def restore_conf_cpordo(request, id):
     
 
 # find all CalendarConfigurationCpordo for product 
-def config_cpordo(request ,product):
+def config_cpordo(request,division ,product):
     #get CalendarConfigurationCpordoForm
     form = CalendarConfigurationCpordoForm()
     # undeleted_objects object of soft delete manager
     data = CalendarConfigurationCpordo.objects.filter(product__pk = product ).order_by('id')    
-    return render(request, "app/CalendarConfigurationCpordo/home_conf_cpordo.html", {'data':data,'product':product,'form':form})
+    return render(request, "app/CalendarConfigurationCpordo/home_conf_cpordo.html", {'data':data,'division':division,'product':product,'form':form})
 
 #********************** Home****************************
 
@@ -751,7 +753,7 @@ def home_page(request):
     return render(request,'app/home/index.html')
 
 #*******************copy calendar************************************
-def copy_calendar(request,product):
+def copy_calendar(request,division,product):
     #Delete holidays
     holidays_data = HolidaysCalendar.undeleted_objects.all().filter(product_id = product)
     holidays_data.delete()
@@ -953,14 +955,16 @@ def shopfloor(request):
     zpp_data=Zpp.objects.filter(created_by= 'Marwa').values('material','data_element_planif','created_by','message','date_reordo')
     coois_data= Coois.objects.all().filter(created_by= 'Marwa').values()
     material_data=Material.objects.values('material','product__program','product__division__name','created_by','workstation','AllocatedTime','Leadtime','Allocated_Time_On_Workstation','Smooth_Family')
-
-   
+    product_work_data=Product.objects.values('planning','workdata__date','workdata__cycle_time')
+    print(product_work_data)
 
     #Convert to DataFrame
     df_zpp=pd.DataFrame(list(zpp_data))
     df_coois=pd.DataFrame(list(coois_data))
     df_material=pd.DataFrame(list(material_data))
     df_material=df_material.rename(columns={'product__program':'program','product__division__name':'division'})
+    df_product_work_data=pd.DataFrame(list(product_work_data))
+    df_product_work_data=df_product_work_data.rename(columns={'workdata__date':'workdate','workdata__cycle_time':'cycle_time'})
     
     
 
@@ -974,12 +978,13 @@ def shopfloor(request):
     df_material['key']=df_material['material'].astype(str)+df_material['division'].astype(str)+df_material['created_by'].astype(str) 
     #add column key for coois (concatinate material,division,profit_centre, created_by )    
     df_coois['key2']=df_coois['material'].astype(str)+df_coois['division'].astype(str)+df_coois['created_by'].astype(str)
-    
-    
-       
+    # add column key for material_work_data (concatinate material, workdate ) 
+    df_product_work_data['key']= df_product_work_data['planning'].astype(str)+df_product_work_data['workdate'].astype(str)
+ 
     #Convert df_zpp to dict
     df_zpp_dict_message=dict(zip(df_zpp.key, df_zpp.message))
     df_zpp_dict_date_reordo=dict(zip(df_zpp.key, df_zpp.date_reordo))
+    
     #Merge ZPP and COOIS with keys
     df_coois['message']=df_coois['key'].map(df_zpp_dict_message)
     df_coois['date_reordo']=df_coois['key'].map(df_zpp_dict_date_reordo)
@@ -1000,9 +1005,57 @@ def shopfloor(request):
     df_coois['Allocated_Time_On_Workstation']=df_coois['key2'].map(df_material_dict_Allocated_Time_On_Workstation)
     df_coois['Smooth_Family']=df_coois['key2'].map(df_material_dict_Smooth_Family)
     
+    #convert df_product_work_data to dict
+    df_product_work_data_dict_date=dict(zip(df_product_work_data.key, df_product_work_data.workdate))
+    df_product_work_data_dict_cycle=dict(zip(df_product_work_data.key, df_product_work_data.cycle_time))
+    
+    
     
     records=df_coois
+    #**************************************
+    file=r'C:\Users\LENOVO\Documents\Mps_Files\df_shopfloor.xlsx'
+    df_data=pd.read_excel(file)
+    df_data=df_data.sort_values('Ranking')
     
+    df_data['freezed']=np.where((df_data['Freeze_end_date'].notna()),'Freezed','not_freezed')
+    #df_data['Freeze_end_date_prev']=df_data['Freeze_end_date'].ffill()
+    df_data['key']=df_data['designation'].astype(str)+pd.to_datetime(df_data['Freeze_end_date']).astype(str)
+    df_data['Freeze_end_date']=pd.to_datetime(df_data['Freeze_end_date'])
+    #Merge
+    df_data['cycle']=df_data['key'].map(df_product_work_data_dict_cycle)
+    #insert in df_date freezed_start_date
+    df_data.insert(0,'freezed_start_date',None)
+    # df_data['freezed_start_date']=np.where((df_data['freezed']=='Freezed'),df_data['Freeze_end_date'],df_data['freezed_start_date'])
+    df_data['freezed_start_date']=pd.to_datetime(df_data['freezed_start_date'])
+    # df_data['freezed_start_date']=df_data['Freeze_end_date']
+    df_data.insert(0,'key_start_day','')
+    print('+++++++++++++++++++')
+    print(df_data)
+    
+    
+    for i in range(1, 15):
+        print('*****************')
+        print(i)
+        print(df_data.loc[i, 'Freeze_end_date'])
+    #     df_data.loc[i, 'freezed_start_date'] =np.where((df_data.loc[i,'freezed']=='not_freezed'),(pd.to_datetime(str(df_data.loc[i-1, 'Freeze_end_date'])) + timedelta(hours=int(df_data.loc[i-1, 'cycle']))),df_data.loc[i, 'freezed_start_date'])
+    #     df_data.loc[i, 'key_start_day']=str(df_data.loc[i,'designation'])+str(df_data.loc[i,'freezed_start_date']).split(' ')[0]
+
+    #     for key,value in df_product_work_data_dict_cycle.items():
+    #         if df_data.loc[i,'key_start_day'] == key:
+    #             df_data.loc[i,'cycle']=value
+    #             if int(df_data.loc[i-1, 'cycle']) == int(df_data.loc[i, 'cycle']):
+    #                 df_data.loc[i, 'freezed_start_date'] =np.where((df_data.loc[i,'freezed']=='not_freezed'),(pd.to_datetime(str(df_data.loc[i-1, 'Freeze_end_date']))),df_data.loc[i, 'freezed_start_date'])
+    #             else:
+    #                 df_data.loc[i, 'freezed_start_date'] =np.where((df_data.loc[i,'freezed']=='not_freezed'),(pd.to_datetime(str(df_data.loc[i-1, 'Freeze_end_date'])) + timedelta(hours=int(df_data.loc[i, 'cycle']))),df_data.loc[i, 'freezed_start_date'])
+
+
+    # df_data.loc[i, 'Freeze_end_date']=np.where((df_data.loc[i,'freezed']=='not_freezed'),(df_data.loc[i, 'freezed_start_date'] + timedelta(hours=int(df_data.loc[i, 'cycle']))),df_data.loc[i, 'Freeze_end_date'])
+    # # df_data.loc[i, 'Freeze_end_date']=np.datetime64(df_data.loc[i, 'Freeze_end_date'])
+    # print(str(df_data.loc[i,'freezed_start_date']).split(' ')[0])
+    
+   
+    
+    #************************************************************
     
     return render(request,'app/Shopfloor/Shopfloor.html',{'records': records} )    
 
@@ -1091,7 +1144,7 @@ def create_shopfloor(request):
                 data.save()
             data=Shopfloor.objects.all().values()
             df_data=pd.DataFrame(list(data))
-            df_data.to_csv('df_shopfloor.csv')
+            #df_data.to_csv('df_shopfloor.csv')
             messages.success(request,"Data saved successfully!") 
         else:
              messages.error(request,"Fill in the first box of Freeze end date please!")  

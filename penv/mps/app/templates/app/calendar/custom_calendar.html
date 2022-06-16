@@ -7,9 +7,9 @@
     <div class="container-fluid">
         <!--return back-->
         <div style='margin-bottom:10px'>
-            <a href="{%url 'calendar' product %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>
+            <a href="{%url 'calendar' division  product  %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>
             </div>
-
+{{division}}
         <div class="row">
             <div class="col-12">
                 <div class="card card-primary card-outline">
@@ -43,7 +43,7 @@
     <div class="modal-dialog">
     <div class="modal-content">
 
-       <form action="{% url 'deletedaycustom' product%}" method='POST'>
+       <form action="{% url 'deletedaycustom' division product%}" method='POST'>
          <!-- Security token -->
             {% csrf_token %}
           <div class="modal-header">
@@ -87,7 +87,7 @@
           <div class="layer"></div>
         </div>
     <br>
-       <form action="{%url 'createcustomcalendar' product %}" method='POST'id="daysOff" style="display: none;">
+       <form action="{%url 'createcustomcalendar' division product %}" method='POST'id="daysOff" style="display: none;">
          <!-- Security token -->
         {% csrf_token %}
           
@@ -130,7 +130,7 @@
        </form>
 
     <!--work hours form -->
-       <form action="{% url 'customwork' product%}" method='POST' id="daysOn">
+       <form action="{% url 'customwork' division product%}" method='POST' id="daysOn">
         <!-- Security token -->
         {% csrf_token %}
          
@@ -195,7 +195,7 @@
                     <label for="cycle-time" class="col-sm-4 control-label">Cycle time</label>
                     <div class="col-sm-8">
                     <input id="cycle-time" name="cycle-time" type="number" class="form-control" required=""step="0.01" >
-                    <input type="radio" id="hour" name="cycle" value="Hours">
+                    <input type="radio" id="hour" name="cycle" value="Hours" checked>
                     <label for="hour">Hours</label>
                     <input type="radio" id="day" name="cycle" value="Days">
                     <label for="day">Days</label><br>

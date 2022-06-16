@@ -14,7 +14,7 @@
         {% endif %}
          <!--return back-->
          <div style='margin-bottom:10px'>
-            <a href="{%url 'product' product %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>
+            <a href="{%url 'product' division  %}"><i class="fa-solid fa-arrow-left-long" style="color: rgb(35, 35, 80);"></i></a>
             </div>
         <div class="row">
             <div class="col-12">
@@ -88,7 +88,7 @@
 <div class="modal" id="create">
     <div class="modal-dialog">
     <div class="modal-content">
-        <form method="POST" action="{% url 'createconfigTrait' product %}">
+        <form method="POST" action="{% url 'createconfigTrait' division product %}">
         <!-- Security token -->
         {% csrf_token %}
        <div class="modal-header">						
@@ -112,7 +112,7 @@
 <div class="modal" id="update" >
     <div class="modal-dialog">
     <div class="modal-content">
-        <form method="POST" action ="{%url 'updateconfigTrait' %}"> 
+        <form method="POST" action ="{%url 'updateconfigTrait' division %}"> 
             <!-- Security token by Django -->
             {% csrf_token %}
         <div class="modal-header">						
@@ -176,9 +176,10 @@
 <script>
     $('#delete').on('show.bs.modal', function (event) {
     var id = $(event.relatedTarget).data('id');
+    var division = {{division}};
     var version = $(event.relatedTarget).data('version');
     $(this).find(".modal-body").text('Are you sure you want to delete these Calendar Configuration Treatment: '+ version +'?');
-    document.getElementById("targetlink").href="/app/product/"+id+"/deleteconfigTrait";
+    document.getElementById("targetlink").href="/app/division/"+division+"/product/"+id+"/deleteconfigTrait";
 
     });
 </script>
@@ -187,9 +188,10 @@
 <script>
     $('#restore').on('show.bs.modal', function (event) {
     var id = $(event.relatedTarget).data('id');
+    var division = {{division}};
     var version = $(event.relatedTarget).data('version');
     $(this).find(".modal-body").text('Are you sure you want to restore these Calendar Configuration Treatment: '+version +'?');
-    document.getElementById("link").href="/app/product/"+id+"/restoreconfigTrait";
+    document.getElementById("link").href="/app/division/"+division+"/product/"+id+"/restoreconfigTrait";
     });
 </script>
 
